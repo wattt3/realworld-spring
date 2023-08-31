@@ -1,9 +1,13 @@
 package wattt3.realworld.user.application.request;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import wattt3.realworld.user.domain.User;
 
+@JsonTypeName("user")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public record RegisterUserRequest(
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     String email,
