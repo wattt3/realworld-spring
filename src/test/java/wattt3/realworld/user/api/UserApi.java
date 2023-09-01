@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 import wattt3.realworld.common.Scenario;
+import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 
 public class UserApi {
@@ -51,6 +52,20 @@ public class UserApi {
             .post("/users")
             .then().log().all()
             .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+        return new Scenario();
+    }
+
+    public Scenario loginApi() {
+        LoginUserRequest request = new LoginUserRequest(email, password);
+
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when()
+            .post("/users/login")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
 
         return new Scenario();
     }

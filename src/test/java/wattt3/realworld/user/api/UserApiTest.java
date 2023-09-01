@@ -32,4 +32,10 @@ public class UserApiTest extends ApiTest {
             .userApi().registerDuplicateUserApi();
     }
 
+    @Test
+    @DisplayName("로그인")
+    void login() {
+        Scenario.userApi().registerUserApi()
+            .userApi().loginApi();
+    }
 }
