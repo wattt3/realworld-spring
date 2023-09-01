@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import wattt3.realworld.user.domain.User;
 
 @JsonTypeName("user")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
@@ -16,7 +15,4 @@ public record RegisterUserRequest(
     @NotBlank(message = "패스워드는 필수입니다.")
     String password) {
 
-    public User toDomain() {
-        return new User(email, username, password, null, null);
-    }
 }

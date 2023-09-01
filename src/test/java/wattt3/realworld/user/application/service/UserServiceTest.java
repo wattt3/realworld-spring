@@ -2,6 +2,8 @@ package wattt3.realworld.user.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ class UserServiceTest {
     private String email;
     private String username;
     private String password;
-    
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -55,5 +57,18 @@ class UserServiceTest {
             new RegisterUserRequest(email, username, password));
 
         assertThat(response.token()).isEqualTo(jwtTokenManager.generate(email));
+    }
+
+    @Test
+    void login() {
+        LoginUserRequest request = new LoginUserRequest(email, password);
+    }
+
+    public record LoginUserRequest(
+        @Email(message = "이메일 형식이 올바르지 않습니다.")
+        String email,
+        @NotBlank(message = "패스워드는 필수입니다.")
+        String password) {
+
     }
 }
