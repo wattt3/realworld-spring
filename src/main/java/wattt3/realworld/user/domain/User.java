@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -39,6 +40,7 @@ public class User {
     @Comment("이미지")
     private String image;
 
+    @Builder
     public User(String email, String username, String password, String bio, String image) {
         validateUser(email, username, password);
         this.email = email;
