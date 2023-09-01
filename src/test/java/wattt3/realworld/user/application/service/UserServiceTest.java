@@ -1,9 +1,8 @@
 package wattt3.realworld.user.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.security.JwtTokenManager;
+import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.domain.UserRepository;
@@ -60,15 +60,27 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("로그인")
     void login() {
         LoginUserRequest request = new LoginUserRequest(email, password);
+
+        userService.register(new RegisterUserRequest(email, username, password));
+        UserResponse response = userService.login(request);
+
+        assertThat(response)
+            .usingRecursiveAssertion()
+            .isEqualTo(
+                new UserResponse(email, jwtTokenManager.generate(email), username, null, null));
     }
 
-    public record LoginUserRequest(
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
-        String email,
-        @NotBlank(message = "패스워드는 필수입니다.")
-        String password) {
+    @Test
+    @DisplayName("로그인 예외 : 틀린 비밀번호")
+    void loginIllegalPassword() {
+        LoginUserRequest request = new LoginUserRequest(email, "illegalPassword");
 
+        userService.register(new RegisterUserRequest(email, username, password));
+        assertThatThrownBy(() -> userService.login(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("틀린 비밀번호입니다.");
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
 import wattt3.realworld.common.security.JwtTokenManager;
+import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.domain.User;
@@ -40,10 +41,33 @@ public class UserService {
 
         userRepository.save(user);
 
+        return userToResponse(user);
+    }
+
+
+    public UserResponse login(LoginUserRequest request) {
+        User user = userRepository.findByEmail(request.email())
+            .orElseThrow(() -> {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER,
+                    "존재하지 않는 유저입니다. email : %s".formatted(request.email()));
+            });
+
+        validatePassword(request, user);
+
+        return userToResponse(user);
+    }
+
+    private UserResponse userToResponse(User user) {
         return new UserResponse(user.getEmail(),
             jwtTokenManager.generate(user.getEmail()),
             user.getUsername(),
             user.getBio(),
             user.getImage());
+    }
+
+    private void validatePassword(LoginUserRequest request, User user) {
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new IllegalArgumentException("틀린 비밀번호입니다.");
+        }
     }
 }
