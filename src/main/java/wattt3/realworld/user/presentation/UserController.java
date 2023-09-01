@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.application.service.UserService;
@@ -24,4 +25,9 @@ public class UserController {
         return userService.register(request);
     }
 
+    @PostMapping("/users/login")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse login(@RequestBody LoginUserRequest request) {
+        return userService.login(request);
+    }
 }
