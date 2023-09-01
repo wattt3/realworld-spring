@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
-import wattt3.realworld.user.infra.UserRepository;
+import wattt3.realworld.user.domain.UserRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UserApiTest extends ApiTest {

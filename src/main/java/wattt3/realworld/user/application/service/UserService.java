@@ -7,7 +7,7 @@ import wattt3.realworld.common.exception.ErrorCode;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.domain.User;
-import wattt3.realworld.user.infra.UserRepository;
+import wattt3.realworld.user.domain.UserRepository;
 
 @Service
 public class UserService {

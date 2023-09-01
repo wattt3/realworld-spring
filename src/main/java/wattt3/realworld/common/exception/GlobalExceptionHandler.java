@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ProblemDetail handleException(CommonException e) {
         return ProblemDetail.forStatusAndDetail(e.getErrorCode().getStatus(),
-            e.getErrorCode().getMessage());
+            e.getMessage() != null ? e.getMessage() : e.getErrorCode().getMessage());
     }
 }
 

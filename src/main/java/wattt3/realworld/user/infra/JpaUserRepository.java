@@ -4,7 +4,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import wattt3.realworld.user.domain.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface JpaUserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
 
     Optional<User> findByEmailOrUsername(String email, String username);
 

@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
-    DUPLICATE_USER(HttpStatus.UNPROCESSABLE_ENTITY, "중복된 유저입니다.");
+    DUPLICATE_USER(HttpStatus.UNPROCESSABLE_ENTITY, "중복된 유저입니다."),
+    NOT_FOUND_USER(HttpStatus.UNPROCESSABLE_ENTITY, "존재하지 않는 유저입니다.");
 
     private final HttpStatus status;
     private final String message;
