@@ -1,5 +1,6 @@
 package wattt3.realworld.user.application.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.exception.CommonException;
@@ -13,9 +14,11 @@ import wattt3.realworld.user.domain.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -24,8 +27,15 @@ public class UserService {
             .ifPresent(user -> {
                 throw new CommonException(ErrorCode.DUPLICATE_USER);
             });
-        User user = request.toDomain();
+
+        User user = User.builder()
+            .email(request.email())
+            .username(request.username())
+            .password(passwordEncoder.encode(request.password()))
+            .build();
+
         userRepository.save(user);
+        
         return new UserResponse(user.getEmail(), null, user.getUsername(), user.getBio(),
             user.getImage());
     }
