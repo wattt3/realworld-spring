@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_ = "Bearer ";
+    private static final String Token_ = "Token ";
     private final JwtTokenManager jwtTokenManager;
 
     public JwtFilter(JwtTokenManager jwtTokenManager) {
@@ -34,10 +34,10 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_)) {
-            return bearerToken.substring(BEARER_.length());
+        if (StringUtils.hasText(token) && token.startsWith(Token_)) {
+            return token.substring(Token_.length());
         }
 
         return null;

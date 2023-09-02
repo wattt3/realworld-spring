@@ -1,6 +1,9 @@
 package wattt3.realworld.user.presentation;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,5 +32,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserResponse login(@RequestBody LoginUserRequest request) {
         return userService.login(request);
+    }
+
+    @GetMapping("/user")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse login(@AuthenticationPrincipal User user) {
+        return userService.getUser(user.getUsername());
     }
 }

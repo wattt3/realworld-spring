@@ -2,6 +2,7 @@ package wattt3.realworld.user.api;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import wattt3.realworld.common.Scenario;
 import wattt3.realworld.user.application.request.LoginUserRequest;
@@ -64,6 +65,18 @@ public class UserApi {
             .body(request)
             .when()
             .post("/users/login")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
+    public Scenario getCurrentUserApi(String token) {
+        RestAssured.given().log().all()
+            .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+            .contentType(ContentType.JSON)
+            .when()
+            .get("/user")
             .then().log().all()
             .statusCode(HttpStatus.OK.value());
 

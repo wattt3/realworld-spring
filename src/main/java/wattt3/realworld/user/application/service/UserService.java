@@ -44,15 +44,18 @@ public class UserService {
         return userToResponse(user);
     }
 
-
+    @Transactional(readOnly = true)
     public UserResponse login(LoginUserRequest request) {
-        User user = userRepository.findByEmail(request.email())
-            .orElseThrow(() -> {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER,
-                    "존재하지 않는 유저입니다. email : %s".formatted(request.email()));
-            });
+        User user = getByEmail(request.email());
 
         validatePassword(request, user);
+
+        return userToResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUser(String email) {
+        User user = getByEmail(email);
 
         return userToResponse(user);
     }
@@ -69,5 +72,13 @@ public class UserService {
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new IllegalArgumentException("틀린 비밀번호입니다.");
         }
+    }
+
+    private User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER,
+                    "존재하지 않는 유저입니다. email : %s".formatted(email));
+            });
     }
 }
