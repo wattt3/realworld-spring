@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.security.JwtTokenManager;
 import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
+import wattt3.realworld.user.application.request.UpdateUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.domain.UserRepository;
 
@@ -83,4 +84,12 @@ class UserServiceTest {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("틀린 비밀번호입니다.");
     }
+
+    @Test
+    @DisplayName("유저 수정")
+    void updateUser() {
+        UpdateUserRequest request = new UpdateUserRequest(email, "bio",
+            "https://realworld.com/image.jpg");
+    }
+
 }
