@@ -50,10 +50,19 @@ public class User {
         this.image = image;
     }
 
+    public User update(String email, String bio, String image) {
+        Assert.hasText(email, "이메일은 필수입니다.");
+
+        this.email = email;
+        this.bio = bio;
+        this.image = image;
+
+        return this;
+    }
+
     private void validateUser(String email, String username, String password) {
         Assert.hasText(email, "이메일은 필수입니다.");
         Assert.hasText(username, "유저명은 필수입니다.");
         Assert.hasText(password, "패스워드는 필수입니다.");
     }
-
 }

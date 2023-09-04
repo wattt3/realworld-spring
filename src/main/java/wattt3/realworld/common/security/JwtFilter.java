@@ -13,11 +13,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_ = "Bearer ";
-    private final JwtTokenManager jwtTokenManager;
+    private static final String Token_ = "Token ";
+    private final TokenManager tokenManager;
 
-    public JwtFilter(JwtTokenManager jwtTokenManager) {
-        this.jwtTokenManager = jwtTokenManager;
+    public JwtFilter(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
     }
 
     @Override
@@ -25,8 +25,8 @@ public class JwtFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = resolveToken(request);
 
-        if (StringUtils.hasText(jwtToken) && jwtTokenManager.isValid(jwtToken)) {
-            Authentication authentication = jwtTokenManager.getAuthentication(jwtToken);
+        if (StringUtils.hasText(jwtToken) && tokenManager.isValid(jwtToken)) {
+            Authentication authentication = tokenManager.getAuthentication(jwtToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
@@ -34,10 +34,10 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_)) {
-            return bearerToken.substring(BEARER_.length());
+        if (StringUtils.hasText(token) && token.startsWith(Token_)) {
+            return token.substring(Token_.length());
         }
 
         return null;

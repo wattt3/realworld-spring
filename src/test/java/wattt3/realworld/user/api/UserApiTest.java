@@ -32,4 +32,17 @@ public class UserApiTest extends ApiTest {
             .userApi().registerDuplicateUserApi();
     }
 
+    @Test
+    @DisplayName("로그인")
+    void login() {
+        Scenario.userApi().registerUserApi()
+            .userApi().loginApi();
+    }
+
+    @Test
+    @DisplayName("현재 유저 정보")
+    void getCurrentUser() {
+        Scenario.userApi().registerUserApi()
+            .userApi().getCurrentUserApi(tokenManager.generate("name@domain.com"));
+    }
 }

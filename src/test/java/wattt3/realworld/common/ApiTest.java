@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import wattt3.realworld.common.security.TokenManager;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ApiTest {
 
+    @Autowired
+    protected TokenManager tokenManager;
     @LocalServerPort
     private int port;
-
     @Autowired
     private DatabaseCleaner databaseCleaner;
 

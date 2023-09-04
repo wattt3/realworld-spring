@@ -13,11 +13,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Import(value = {
     DefaultAuthenticationEntryPoint.class,
     DefaultAccessDeniedHandler.class,
-    BCryptPasswordEncoder.class})
+    BCryptPasswordEncoder.class,
+    JwtFilter.class})
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,17 +27,20 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
+    private final JwtFilter jwtFilter;
 
     public SecurityConfig(AccessDeniedHandler accessDeniedHandler,
-        AuthenticationEntryPoint authenticationEntryPoint) {
+        AuthenticationEntryPoint authenticationEntryPoint, JwtFilter jwtFilter) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
         throws Exception {
         return http
+            .httpBasic(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .sessionManagement(sessionManagement ->
@@ -44,8 +49,9 @@ public class SecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .anyRequest().authenticated())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class JwtTokenManager {
+public class JwtTokenManager implements TokenManager {
 
     private static final long TOKEN_VALID_TIME = 30 * 60 * 1000L;
 
