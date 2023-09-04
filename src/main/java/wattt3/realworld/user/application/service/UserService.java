@@ -8,6 +8,7 @@ import wattt3.realworld.common.exception.ErrorCode;
 import wattt3.realworld.common.security.JwtTokenManager;
 import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
+import wattt3.realworld.user.application.request.UpdateUserRequest;
 import wattt3.realworld.user.application.response.UserResponse;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
@@ -58,6 +59,15 @@ public class UserService {
         User user = getByEmail(email);
 
         return userToResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateUser(String email, UpdateUserRequest request) {
+        User user = getByEmail(email);
+
+        User updatedUser = user.update(request.email(), request.bio(), request.image());
+
+        return userToResponse(updatedUser);
     }
 
     private UserResponse userToResponse(User user) {

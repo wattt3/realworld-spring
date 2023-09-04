@@ -24,6 +24,8 @@ class UserServiceTest {
     private String email;
     private String username;
     private String password;
+    private String bio;
+    private String image;
 
     @Autowired
     private UserService userService;
@@ -39,6 +41,8 @@ class UserServiceTest {
         email = "name@domain.com";
         username = "username";
         password = "password";
+        bio = "bio";
+        image = "https://realworld.com/image.jpg";
     }
 
     @Test
@@ -88,8 +92,17 @@ class UserServiceTest {
     @Test
     @DisplayName("유저 수정")
     void updateUser() {
-        UpdateUserRequest request = new UpdateUserRequest(email, "bio",
-            "https://realworld.com/image.jpg");
+        var request = new UpdateUserRequest("updatedEmail", "updatedBio",
+            "https://realworld.com/updatedImage.jpg");
+        var expected = new UserResponse("updatedEmail", jwtTokenManager.generate("updatedEmail"),
+            username, "updatedBio", "https://realworld.com/updatedImage.jpg");
+
+        userService.register(new RegisterUserRequest(email, username, password));
+        UserResponse response = userService.updateUser(email, request);
+
+        assertThat(response)
+            .usingRecursiveAssertion()
+            .isEqualTo(expected);
     }
 
 }
