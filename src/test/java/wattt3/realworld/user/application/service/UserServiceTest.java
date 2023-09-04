@@ -8,9 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import wattt3.realworld.common.security.JwtTokenManager;
+import wattt3.realworld.common.security.TokenManager;
 import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.request.UpdateUserRequest;
@@ -19,6 +20,7 @@ import wattt3.realworld.user.domain.UserRepository;
 
 @SpringBootTest
 @Transactional
+@Import(StubTokenManager.class)
 class UserServiceTest {
 
     private String email;
@@ -34,7 +36,7 @@ class UserServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private JwtTokenManager jwtTokenManager;
+    private TokenManager tokenManager;
 
     @BeforeEach
     void setUp() {
@@ -61,7 +63,7 @@ class UserServiceTest {
         UserResponse response = userService.register(
             new RegisterUserRequest(email, username, password));
 
-        assertThat(response.token()).isEqualTo(jwtTokenManager.generate(email));
+        assertThat(response.token()).isEqualTo(tokenManager.generate(email));
     }
 
     @Test
@@ -75,7 +77,7 @@ class UserServiceTest {
         assertThat(response)
             .usingRecursiveAssertion()
             .isEqualTo(
-                new UserResponse(email, jwtTokenManager.generate(email), username, null, null));
+                new UserResponse(email, tokenManager.generate(email), username, null, null));
     }
 
     @Test
@@ -94,7 +96,7 @@ class UserServiceTest {
     void updateUser() {
         var request = new UpdateUserRequest("updatedEmail", "updatedBio",
             "https://realworld.com/updatedImage.jpg");
-        var expected = new UserResponse("updatedEmail", jwtTokenManager.generate("updatedEmail"),
+        var expected = new UserResponse("updatedEmail", tokenManager.generate("updatedEmail"),
             username, "updatedBio", "https://realworld.com/updatedImage.jpg");
 
         userService.register(new RegisterUserRequest(email, username, password));

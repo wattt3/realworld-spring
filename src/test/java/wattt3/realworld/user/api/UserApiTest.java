@@ -43,6 +43,6 @@ public class UserApiTest extends ApiTest {
     @DisplayName("현재 유저 정보")
     void getCurrentUser() {
         Scenario.userApi().registerUserApi()
-            .userApi().getCurrentUserApi(jwtTokenManager.generate("name@domain.com"));
+            .userApi().getCurrentUserApi(tokenManager.generate("name@domain.com"));
     }
 }

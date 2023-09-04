@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
-import wattt3.realworld.common.security.JwtTokenManager;
+import wattt3.realworld.common.security.TokenManager;
 import wattt3.realworld.user.application.request.LoginUserRequest;
 import wattt3.realworld.user.application.request.RegisterUserRequest;
 import wattt3.realworld.user.application.request.UpdateUserRequest;
@@ -18,13 +18,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenManager jwtTokenManager;
+    private final TokenManager tokenManager;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        JwtTokenManager jwtTokenManager) {
+        TokenManager tokenManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenManager = jwtTokenManager;
+        this.tokenManager = tokenManager;
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class UserService {
 
     private UserResponse userToResponse(User user) {
         return new UserResponse(user.getEmail(),
-            jwtTokenManager.generate(user.getEmail()),
+            tokenManager.generate(user.getEmail()),
             user.getUsername(),
             user.getBio(),
             user.getImage());

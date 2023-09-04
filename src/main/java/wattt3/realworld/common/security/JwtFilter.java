@@ -14,10 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final String Token_ = "Token ";
-    private final JwtTokenManager jwtTokenManager;
+    private final TokenManager tokenManager;
 
-    public JwtFilter(JwtTokenManager jwtTokenManager) {
-        this.jwtTokenManager = jwtTokenManager;
+    public JwtFilter(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
     }
 
     @Override
@@ -25,8 +25,8 @@ public class JwtFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = resolveToken(request);
 
-        if (StringUtils.hasText(jwtToken) && jwtTokenManager.isValid(jwtToken)) {
-            Authentication authentication = jwtTokenManager.getAuthentication(jwtToken);
+        if (StringUtils.hasText(jwtToken) && tokenManager.isValid(jwtToken)) {
+            Authentication authentication = tokenManager.getAuthentication(jwtToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
