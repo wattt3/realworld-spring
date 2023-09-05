@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import wattt3.realworld.profile.application.response.ProfileResponse;
 import wattt3.realworld.profile.application.service.ProfileService;
 
 @RestController
@@ -22,8 +23,9 @@ public class ProfileController {
 
     @PostMapping("/{followee}/follow")
     @ResponseStatus(HttpStatus.CREATED)
-    public void follow(@PathVariable String followee, @AuthenticationPrincipal User user) {
-        profileService.follow(followee, user.getUsername());
+    public ProfileResponse follow(@PathVariable String followee,
+        @AuthenticationPrincipal User user) {
+        return profileService.follow(followee, user.getUsername());
     }
 
 }

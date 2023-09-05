@@ -3,6 +3,7 @@ package wattt3.realworld.profile.application.service;
 import org.springframework.stereotype.Service;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
+import wattt3.realworld.profile.application.response.ProfileResponse;
 import wattt3.realworld.profile.domain.FollowRelation;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
 import wattt3.realworld.user.domain.User;
@@ -20,7 +21,7 @@ public class ProfileService {
         this.userRepository = userRepository;
     }
 
-    public void follow(String followeeName, String followerEmail) {
+    public ProfileResponse follow(String followeeName, String followerEmail) {
         User follower = userRepository.findByEmail(followerEmail)
             .orElseThrow(() -> {
                 throw new CommonException(ErrorCode.NOT_FOUND_USER,
@@ -35,5 +36,7 @@ public class ProfileService {
         FollowRelation followRelation = new FollowRelation(followee.getId(), follower.getId());
 
         followRelationRepository.save(followRelation);
+
+        return followee.toProfile(true);
     }
 }
