@@ -1,20 +1,19 @@
-package wattt3.realworld.profile.application;
+package wattt3.realworld.profile.application.service;
 
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
+import wattt3.realworld.profile.domain.FollowRelation;
+import wattt3.realworld.profile.domain.FollowRelationRepository;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 
 public class ProfileService {
 
-    private final ProfileServiceTest profileServiceTest;
     private final FollowRelationRepository followRelationRepository;
     private final UserRepository userRepository;
 
-    ProfileService(ProfileServiceTest profileServiceTest,
-        FollowRelationRepository followRelationRepository,
+    public ProfileService(FollowRelationRepository followRelationRepository,
         UserRepository userRepository) {
-        this.profileServiceTest = profileServiceTest;
         this.followRelationRepository = followRelationRepository;
         this.userRepository = userRepository;
     }

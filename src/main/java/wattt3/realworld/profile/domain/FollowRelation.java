@@ -1,4 +1,4 @@
-package wattt3.realworld.profile.application;
+package wattt3.realworld.profile.domain;
 
 public class FollowRelation {
 

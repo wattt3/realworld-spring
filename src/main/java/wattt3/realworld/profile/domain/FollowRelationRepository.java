@@ -1,4 +1,4 @@
-package wattt3.realworld.profile.application;
+package wattt3.realworld.profile.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;

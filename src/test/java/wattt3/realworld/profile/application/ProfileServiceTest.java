@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import wattt3.realworld.profile.application.service.ProfileService;
+import wattt3.realworld.profile.domain.FollowRelationRepository;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 
@@ -14,13 +16,13 @@ public class ProfileServiceTest {
 
     private ProfileService profileService;
     private FollowRelationRepository followRelationRepository;
-    private UserRepository stubUserRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        stubUserRepository = new StubUserRepository();
+        userRepository = new StubUserRepository();
         followRelationRepository = new FollowRelationRepository();
-        profileService = new ProfileService(this, followRelationRepository, stubUserRepository);
+        profileService = new ProfileService(followRelationRepository, userRepository);
     }
 
     @Test
