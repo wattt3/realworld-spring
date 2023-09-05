@@ -1,5 +1,6 @@
 package wattt3.realworld.profile.application.service;
 
+import org.springframework.stereotype.Service;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
 import wattt3.realworld.profile.domain.FollowRelation;
@@ -7,6 +8,7 @@ import wattt3.realworld.profile.domain.FollowRelationRepository;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 
+@Service
 public class ProfileService {
 
     private final FollowRelationRepository followRelationRepository;

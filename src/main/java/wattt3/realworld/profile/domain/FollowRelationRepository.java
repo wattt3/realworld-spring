@@ -1,22 +1,10 @@
 package wattt3.realworld.profile.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class FollowRelationRepository {
+public interface FollowRelationRepository {
 
-    private final Map<Pair<Long, Long>, FollowRelation> followRelations = new HashMap<>();
+    FollowRelation save(FollowRelation followRelation);
 
-    public void save(FollowRelation followRelation) {
-        followRelations.put(
-            Pair.of(followRelation.getFolloweeId(), followRelation.getFollowerId()),
-            followRelation);
-    }
-
-    public List<FollowRelation> findAll() {
-        return new ArrayList<>(followRelations.values());
-    }
+    List<FollowRelation> findAll();
 }
