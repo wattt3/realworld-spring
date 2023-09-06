@@ -39,4 +39,22 @@ public class ProfileService {
 
         return followee.toProfile(true);
     }
+
+    public ProfileResponse getProfile(String followeeName, String followerEmail) {
+        User follower = userRepository.findByEmail(followerEmail)
+            .orElseThrow(() -> {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER,
+                    "존재하지 않는 유저입니다. email : %s".formatted(followerEmail));
+            });
+        User followee = userRepository.findByUsername(followeeName)
+            .orElseThrow(() -> {
+                throw new CommonException(ErrorCode.NOT_FOUND_USER,
+                    "존재하지 않는 유저입니다. username : %s".formatted(followeeName));
+            });
+
+        boolean following = followRelationRepository.findByFolloweeIdAndFollowerId(
+            followee.getId(), follower.getId()).isPresent();
+
+        return followee.toProfile(following);
+    }
 }

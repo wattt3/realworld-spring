@@ -11,7 +11,6 @@ import wattt3.realworld.profile.domain.FollowRelationRepository;
 
 public class ProfileApiTest extends ApiTest {
 
-    private final ProfileApi profileApi = new ProfileApi();
     @Autowired
     private FollowRelationRepository followRelationRepository;
 
