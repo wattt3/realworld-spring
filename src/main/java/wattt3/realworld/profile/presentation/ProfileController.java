@@ -3,6 +3,7 @@ package wattt3.realworld.profile.presentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,14 @@ public class ProfileController {
 
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @GetMapping("/{followee}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProfileResponse getProfile(@PathVariable String followee,
+        @AuthenticationPrincipal User user) {
+//        String userEmail = user.getUsername();
+        return profileService.getProfile(followee, null);
     }
 
     @PostMapping("/{followee}/follow")

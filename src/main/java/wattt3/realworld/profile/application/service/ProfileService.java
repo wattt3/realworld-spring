@@ -1,5 +1,6 @@
 package wattt3.realworld.profile.application.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
@@ -41,20 +42,19 @@ public class ProfileService {
     }
 
     public ProfileResponse getProfile(String followeeName, String followerEmail) {
-        User follower = userRepository.findByEmail(followerEmail)
-            .orElseThrow(() -> {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER,
-                    "존재하지 않는 유저입니다. email : %s".formatted(followerEmail));
-            });
+        Optional<User> optionalFollower = userRepository.findByEmail(followerEmail);
         User followee = userRepository.findByUsername(followeeName)
             .orElseThrow(() -> {
                 throw new CommonException(ErrorCode.NOT_FOUND_USER,
                     "존재하지 않는 유저입니다. username : %s".formatted(followeeName));
             });
 
-        boolean following = followRelationRepository.findByFolloweeIdAndFollowerId(
-            followee.getId(), follower.getId()).isPresent();
+        if (optionalFollower.isPresent()) {
+            boolean following = followRelationRepository.findByFolloweeIdAndFollowerId(
+                followee.getId(), optionalFollower.get().getId()).isPresent();
+            return followee.toProfile(following);
+        }
 
-        return followee.toProfile(following);
+        return followee.toProfile(false);
     }
 }

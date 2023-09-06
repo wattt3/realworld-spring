@@ -25,4 +25,12 @@ public class ProfileApiTest extends ApiTest {
         assertThat(followRelationRepository.findAll()).hasSize(1);
     }
 
+    @Test
+    @DisplayName("유저 프로필 불러오기")
+    void getProfile() {
+        Scenario.userApi().email("followee@domain.com").username("followee").registerUserApi();
+
+        Scenario.profileApi().getProfileApi();
+    }
+
 }
