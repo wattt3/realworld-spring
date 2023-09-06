@@ -3,6 +3,7 @@ package wattt3.realworld.profile.presentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,8 @@ public class ProfileController {
     @ResponseStatus(HttpStatus.OK)
     public ProfileResponse getProfile(@PathVariable String followee,
         @AuthenticationPrincipal User user) {
-//        String userEmail = user.getUsername();
-        return profileService.getProfile(followee, null);
+        String userEmail = user != null ? user.getUsername() : null;
+        return profileService.getProfile(followee, userEmail);
     }
 
     @PostMapping("/{followee}/follow")
@@ -35,6 +36,13 @@ public class ProfileController {
     public ProfileResponse follow(@PathVariable String followee,
         @AuthenticationPrincipal User user) {
         return profileService.follow(followee, user.getUsername());
+    }
+
+    @DeleteMapping("/{followee}/follow")
+    @ResponseStatus(HttpStatus.OK)
+    public ProfileResponse unfollow(@PathVariable String followee,
+        @AuthenticationPrincipal User user) {
+        return profileService.unfollow(followee, user.getUsername());
     }
 
 }

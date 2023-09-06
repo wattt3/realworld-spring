@@ -33,4 +33,15 @@ public class ProfileApiTest extends ApiTest {
         Scenario.profileApi().getProfileApi();
     }
 
+    @Test
+    @DisplayName("유저 언팔로우")
+    void unfollow() {
+        Scenario.userApi().registerUserApi()
+            .userApi().email("followee@domain.com").username("followee").registerUserApi();
+
+        Scenario.profileApi().unfollow(tokenManager.generate(email));
+
+        assertThat(followRelationRepository.findAll()).hasSize(0);
+    }
+
 }

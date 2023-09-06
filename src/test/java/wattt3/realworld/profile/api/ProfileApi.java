@@ -38,4 +38,19 @@ public class ProfileApi {
 
         return new Scenario();
     }
+
+    public Scenario unfollow(String token) {
+        RestAssured.given().log().all()
+            .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+            .when()
+            .delete("/profiles/followee/follow")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .body("profile", hasKey("username"))
+            .body("profile", hasKey("bio"))
+            .body("profile", hasKey("image"))
+            .body("profile", hasKey("following"));
+
+        return new Scenario();
+    }
 }
