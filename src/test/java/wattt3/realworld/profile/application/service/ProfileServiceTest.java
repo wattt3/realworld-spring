@@ -1,6 +1,7 @@
 package wattt3.realworld.profile.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wattt3.realworld.profile.fixture.ProfileFixture.aProfile;
 import static wattt3.realworld.user.fixture.UserFixture.aUser;
 
 import java.util.List;
@@ -19,7 +20,7 @@ class ProfileServiceTest {
         var profileService = new ProfileService(new StubFollowRelationRepository(),
             new StubUserRepository());
 
-        ProfileResponse response = profileService.getProfile("followee", "user@domain.com");
+        var response = profileService.getProfile("followee", "user@domain.com");
 
         assertThat(response)
             .usingRecursiveAssertion()
@@ -41,7 +42,7 @@ class ProfileServiceTest {
         @Override
         public Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId,
             Long followerId) {
-            return Optional.of(new FollowRelation(1L, 2L));
+            return Optional.of(aProfile().build());
         }
     }
 
