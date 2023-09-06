@@ -2,6 +2,7 @@ package wattt3.realworld.profile.application.service;
 
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.common.exception.CommonException;
 import wattt3.realworld.common.exception.ErrorCode;
 import wattt3.realworld.profile.application.response.ProfileResponse;
@@ -22,6 +23,7 @@ public class ProfileService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public ProfileResponse follow(String followeeName, String followerEmail) {
         User follower = userRepository.findByEmail(followerEmail)
             .orElseThrow(() -> {
@@ -41,6 +43,7 @@ public class ProfileService {
         return followee.toProfile(true);
     }
 
+    @Transactional(readOnly = true)
     public ProfileResponse getProfile(String followeeName, String followerEmail) {
         Optional<User> optionalFollower = userRepository.findByEmail(followerEmail);
         User followee = userRepository.findByUsername(followeeName)
