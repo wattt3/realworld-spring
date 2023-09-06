@@ -71,6 +71,11 @@ class DefaultUserDetailsServiceTest {
         public List<User> findAll() {
             return null;
         }
+
+        @Override
+        public Optional<User> findByUsername(String username) {
+            return Optional.empty();
+        }
     }
 
 }

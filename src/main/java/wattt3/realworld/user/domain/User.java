@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.util.Assert;
+import wattt3.realworld.profile.application.response.ProfileResponse;
 
 @Getter
 @Entity
@@ -58,6 +59,10 @@ public class User {
         this.image = image;
 
         return this;
+    }
+
+    public ProfileResponse toProfile(boolean following) {
+        return new ProfileResponse(username, bio, image, following);
     }
 
     private void validateUser(String email, String username, String password) {

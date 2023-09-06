@@ -11,6 +11,8 @@ import wattt3.realworld.common.security.TokenManager;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ApiTest {
 
+    protected final String email = "name@domain.com";
+
     @Autowired
     protected TokenManager tokenManager;
     @LocalServerPort

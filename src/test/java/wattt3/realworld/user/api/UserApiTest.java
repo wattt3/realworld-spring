@@ -5,13 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
 import wattt3.realworld.user.domain.UserRepository;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UserApiTest extends ApiTest {
 
     @Autowired
@@ -43,6 +40,6 @@ public class UserApiTest extends ApiTest {
     @DisplayName("현재 유저 정보")
     void getCurrentUser() {
         Scenario.userApi().registerUserApi()
-            .userApi().getCurrentUserApi(tokenManager.generate("name@domain.com"));
+            .userApi().getCurrentUserApi(tokenManager.generate(email));
     }
 }

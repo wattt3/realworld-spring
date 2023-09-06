@@ -34,4 +34,9 @@ public class UserRepositoryAdapter implements UserRepository {
     public List<User> findAll() {
         return userRepository.findAll();
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
