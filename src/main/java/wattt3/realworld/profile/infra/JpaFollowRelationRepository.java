@@ -6,6 +6,9 @@ import wattt3.realworld.profile.domain.FollowRelation;
 
 public interface JpaFollowRelationRepository extends JpaRepository<FollowRelation, Long> {
 
+    void deleteByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
+        Long followeeId, Long followerId);
+
     Optional<FollowRelation> findByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
         Long followeeId, Long followerId);
 

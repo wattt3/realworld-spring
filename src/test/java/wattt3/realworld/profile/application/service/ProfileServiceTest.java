@@ -15,16 +15,26 @@ import wattt3.realworld.user.domain.UserRepository;
 
 class ProfileServiceTest {
 
+    private final ProfileService profileService = new ProfileService(
+        new StubFollowRelationRepository(),
+        new StubUserRepository());
+
     @Test
     void getProfile() {
-        var profileService = new ProfileService(new StubFollowRelationRepository(),
-            new StubUserRepository());
-
         var response = profileService.getProfile("followee", "user@domain.com");
 
         assertThat(response)
             .usingRecursiveAssertion()
             .isEqualTo(new ProfileResponse("followee", null, null, true));
+    }
+
+    @Test
+    void deleteFollow() {
+        var response = profileService.unfollow("followee", "follower");
+
+        assertThat(response)
+            .usingRecursiveAssertion()
+            .isEqualTo(new ProfileResponse("followee", null, null, false));
     }
 
     class StubFollowRelationRepository implements FollowRelationRepository {
@@ -43,6 +53,10 @@ class ProfileServiceTest {
         public Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId,
             Long followerId) {
             return Optional.of(aProfile().build());
+        }
+
+        @Override
+        public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
         }
     }
 

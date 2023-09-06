@@ -31,4 +31,10 @@ public class FollowRelationAdapter implements FollowRelationRepository {
         return jpaFollowRelationRepository.findByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
             followeeId, followerId);
     }
+
+    @Override
+    public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
+        jpaFollowRelationRepository.deleteByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
+            followeeId, followerId);
+    }
 }

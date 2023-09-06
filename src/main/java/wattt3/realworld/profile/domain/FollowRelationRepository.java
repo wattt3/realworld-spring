@@ -10,4 +10,6 @@ public interface FollowRelationRepository {
     List<FollowRelation> findAll();
 
     Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId, Long followerId);
+
+    void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId);
 }
