@@ -14,11 +14,11 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
-    
+
     @ExceptionHandler(CommonException.class)
     public ProblemDetail handleException(CommonException e) {
         return ProblemDetail.forStatusAndDetail(e.getErrorCode().getStatus(),
-            e.getMessage() != null ? e.getMessage() : e.getErrorCode().getMessage());
+                e.getMessage() != null ? e.getMessage() : e.getErrorCode().getMessage());
     }
 }
 

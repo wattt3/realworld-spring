@@ -16,10 +16,10 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Import(value = {
-    DefaultAuthenticationEntryPoint.class,
-    DefaultAccessDeniedHandler.class,
-    BCryptPasswordEncoder.class,
-    JwtFilter.class})
+        DefaultAuthenticationEntryPoint.class,
+        DefaultAccessDeniedHandler.class,
+        BCryptPasswordEncoder.class,
+        JwtFilter.class})
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(AccessDeniedHandler accessDeniedHandler,
-        AuthenticationEntryPoint authenticationEntryPoint, JwtFilter jwtFilter) {
+                          AuthenticationEntryPoint authenticationEntryPoint, JwtFilter jwtFilter) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
         this.jwtFilter = jwtFilter;
@@ -38,21 +38,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
-        throws Exception {
+            throws Exception {
         return http
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .sessionManagement(sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(exceptionHandle -> exceptionHandle
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler))
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
-                .anyRequest().authenticated())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptionHandle -> exceptionHandle
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

@@ -1,13 +1,13 @@
 package wattt3.realworld.profile.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProfileApiTest extends ApiTest {
 
@@ -18,7 +18,7 @@ public class ProfileApiTest extends ApiTest {
     @DisplayName("유저 팔로우")
     void follow() {
         Scenario.userApi().registerUserApi()
-            .userApi().email("followee@domain.com").username("followee").registerUserApi();
+                .userApi().email("followee@domain.com").username("followee").registerUserApi();
 
         Scenario.profileApi().follow(tokenManager.generate(email));
 
@@ -37,7 +37,7 @@ public class ProfileApiTest extends ApiTest {
     @DisplayName("유저 언팔로우")
     void unfollow() {
         Scenario.userApi().registerUserApi()
-            .userApi().email("followee@domain.com").username("followee").registerUserApi();
+                .userApi().email("followee@domain.com").username("followee").registerUserApi();
 
         Scenario.profileApi().unfollow(tokenManager.generate(email));
 

@@ -25,7 +25,7 @@ public class FollowRelation {
     public Long getFolloweeId() {
         return followRelationId.getFolloweeId();
     }
-    
+
     public Long getFollowerId() {
         return followRelationId.getFollowerId();
     }

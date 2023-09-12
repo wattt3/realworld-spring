@@ -21,7 +21,7 @@ public class UserService {
     private final TokenManager tokenManager;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        TokenManager tokenManager) {
+                       TokenManager tokenManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenManager = tokenManager;
@@ -29,16 +29,15 @@ public class UserService {
 
     @Transactional
     public UserResponse register(RegisterUserRequest request) {
-        userRepository.findByEmailOrUsername(request.email(), request.username())
-            .ifPresent(user -> {
-                throw new CommonException(ErrorCode.DUPLICATE_USER);
-            });
+        if (userRepository.existsByEmailOrUsername(request.email(), request.username())) {
+            throw new CommonException(ErrorCode.DUPLICATE_USER);
+        }
 
         User user = User.builder()
-            .email(request.email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .build();
+                .email(request.email())
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .build();
 
         userRepository.save(user);
 
@@ -47,23 +46,25 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse login(LoginUserRequest request) {
-        User user = getByEmail(request.email());
+        User user = userRepository.getByEmail(request.email());
 
-        validatePassword(request, user);
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new IllegalArgumentException("틀린 비밀번호입니다.");
+        }
 
         return userToResponse(user);
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUser(String email) {
-        User user = getByEmail(email);
+    public UserResponse getUser(Long userId) {
+        User user = userRepository.getById(userId);
 
         return userToResponse(user);
     }
 
     @Transactional
-    public UserResponse updateUser(String email, UpdateUserRequest request) {
-        User user = getByEmail(email);
+    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.getById(userId);
 
         User updatedUser = user.update(request.email(), request.bio(), request.image());
 
@@ -72,23 +73,10 @@ public class UserService {
 
     private UserResponse userToResponse(User user) {
         return new UserResponse(user.getEmail(),
-            tokenManager.generate(user.getEmail()),
-            user.getUsername(),
-            user.getBio(),
-            user.getImage());
+                tokenManager.generate(user.getEmail()),
+                user.getUsername(),
+                user.getBio(),
+                user.getImage());
     }
 
-    private void validatePassword(LoginUserRequest request, User user) {
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new IllegalArgumentException("틀린 비밀번호입니다.");
-        }
-    }
-
-    private User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER,
-                    "존재하지 않는 유저입니다. email : %s".formatted(email));
-            });
-    }
 }

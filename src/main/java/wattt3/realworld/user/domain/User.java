@@ -1,15 +1,7 @@
 package wattt3.realworld.user.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.util.Assert;
 import wattt3.realworld.profile.application.response.ProfileResponse;
@@ -19,6 +11,7 @@ import wattt3.realworld.profile.application.response.ProfileResponse;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Comment("유저")
+@ToString
 public class User {
 
     @Id
@@ -40,6 +33,9 @@ public class User {
     @Column(name = "image")
     @Comment("이미지")
     private String image;
+    @Column(name = "is_deleted")
+    @Comment("탈퇴")
+    private boolean isDeleted = false;
 
     @Builder
     public User(String email, String username, String password, String bio, String image) {
@@ -49,6 +45,7 @@ public class User {
         this.password = password;
         this.bio = bio;
         this.image = image;
+        this.isDeleted = false;
     }
 
     public User update(String email, String bio, String image) {
@@ -63,6 +60,10 @@ public class User {
 
     public ProfileResponse toProfile(boolean following) {
         return new ProfileResponse(username, bio, image, following);
+    }
+
+    public void delete() {
+        isDeleted = true;
     }
 
     private void validateUser(String email, String username, String password) {

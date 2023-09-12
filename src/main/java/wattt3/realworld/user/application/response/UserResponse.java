@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("user")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public record UserResponse(
-    String email,
-    String token,
-    String username,
-    String bio,
-    String image) {
+        String email,
+        String token,
+        String username,
+        String bio,
+        String image) {
 
 }
