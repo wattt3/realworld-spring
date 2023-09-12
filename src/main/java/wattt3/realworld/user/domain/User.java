@@ -1,7 +1,17 @@
 package wattt3.realworld.user.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.google.common.annotations.VisibleForTesting;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.springframework.util.Assert;
 import wattt3.realworld.profile.application.response.ProfileResponse;
@@ -40,6 +50,18 @@ public class User {
     @Builder
     public User(String email, String username, String password, String bio, String image) {
         validateUser(email, username, password);
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.bio = bio;
+        this.image = image;
+        this.isDeleted = false;
+    }
+
+    @VisibleForTesting
+    User(Long id, String email, String username, String password, String bio, String image) {
+        validateUser(email, username, password);
+        this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;

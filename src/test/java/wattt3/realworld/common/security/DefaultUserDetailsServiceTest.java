@@ -1,5 +1,11 @@
 package wattt3.realworld.common.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static wattt3.realworld.user.domain.UserFixture.aUser;
+
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,13 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import wattt3.realworld.common.security.dto.CustomUserDetails;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static wattt3.realworld.user.fixture.UserFixture.aUser;
 
 class DefaultUserDetailsServiceTest {
 
@@ -29,7 +28,8 @@ class DefaultUserDetailsServiceTest {
     @Test
     @DisplayName("loadByUsername 테스트")
     void loadByUsername() {
-        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(emailFixture);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(
+                emailFixture);
 
         assertAll(() -> assertThat(userDetails.getUsername()).isEqualTo("username"),
                 () -> assertThat(userDetails.getEmail()).isEqualTo(emailFixture));
