@@ -1,15 +1,8 @@
 package wattt3.realworld.common.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Collections;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Collections;
+import java.util.Date;
 
 @Component
 @Slf4j
@@ -28,7 +25,7 @@ public class JwtTokenManager implements TokenManager {
     private final UserDetailsService userDetailsService;
 
     public JwtTokenManager(@Value("${jwt.secret}") String secretKey,
-        UserDetailsService userDetailsService) {
+                           UserDetailsService userDetailsService) {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         this.userDetailsService = userDetailsService;
     }
@@ -37,19 +34,19 @@ public class JwtTokenManager implements TokenManager {
         Date now = new Date();
 
         return Jwts.builder()
-            .setSubject(email)
-            .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + TOKEN_VALID_TIME))
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + TOKEN_VALID_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public boolean isValid(String token) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid Jwt Token");
@@ -70,11 +67,11 @@ public class JwtTokenManager implements TokenManager {
 
     private String getUserEmail(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .getSubject();
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
 }

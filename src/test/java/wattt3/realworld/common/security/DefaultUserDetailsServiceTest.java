@@ -1,48 +1,46 @@
 package wattt3.realworld.common.security;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import wattt3.realworld.common.security.dto.CustomUserDetails;
+import wattt3.realworld.user.domain.User;
+import wattt3.realworld.user.domain.UserRepository;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wattt3.realworld.user.fixture.UserFixture.aUser;
 
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import wattt3.realworld.common.exception.CommonException;
-import wattt3.realworld.user.domain.User;
-import wattt3.realworld.user.domain.UserRepository;
-
 class DefaultUserDetailsServiceTest {
 
+    private final String emailFixture = "name@domain.com";
     private UserDetailsService userDetailsService;
-    private String emailFixture;
 
     @BeforeEach
     void setUp() {
         UserRepository stubUserRepository = new StubUserRepository();
         userDetailsService = new DefaultUserDetailsService(stubUserRepository);
-        emailFixture = "name@domain.com";
     }
 
     @Test
     @DisplayName("loadByUsername 테스트")
     void loadByUsername() {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(emailFixture);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(emailFixture);
 
-        assertAll(() -> assertThat(userDetails.getUsername()).isEqualTo(emailFixture),
-            () -> assertThat(userDetails.getPassword()).isEqualTo("password"));
+        assertAll(() -> assertThat(userDetails.getUsername()).isEqualTo("username"),
+                () -> assertThat(userDetails.getEmail()).isEqualTo(emailFixture));
     }
 
     @Test
     @DisplayName("존재하지 않는 유저 load")
     void loadByNotExistUsername() {
         assertThatThrownBy(() -> userDetailsService.loadUserByUsername("notExist@email.com"))
-            .isInstanceOf(CommonException.class)
-            .hasMessage("존재하지 않는 유저입니다. email : notExist@email.com");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("email: notExist@email.com 존재하지 않습니다.");
     }
 
     private class StubUserRepository implements UserRepository {
@@ -53,18 +51,21 @@ class DefaultUserDetailsServiceTest {
         }
 
         @Override
-        public Optional<User> findByEmail(String email) {
-            if (email.equals(emailFixture)) {
-                return Optional.ofNullable(aUser()
-                    .email(emailFixture)
-                    .build());
-            }
-            return Optional.empty();
+        public User getById(Long userId) {
+            return null;
         }
 
         @Override
-        public Optional<User> findByEmailOrUsername(String email, String username) {
-            return Optional.empty();
+        public User getByEmail(String email) {
+            if (email.equals("notExist@email.com")) {
+                throw new IllegalArgumentException("email: %s 존재하지 않습니다.".formatted(email));
+            }
+            return aUser().build();
+        }
+
+        @Override
+        public boolean existsByEmailOrUsername(String email, String username) {
+            return false;
         }
 
         @Override
@@ -73,8 +74,8 @@ class DefaultUserDetailsServiceTest {
         }
 
         @Override
-        public Optional<User> findByUsername(String username) {
-            return Optional.empty();
+        public User getByUsername(String username) {
+            return null;
         }
     }
 

@@ -4,8 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import wattt3.realworld.common.exception.CommonException;
-import wattt3.realworld.common.exception.ErrorCode;
+import wattt3.realworld.common.security.dto.CustomUserDetails;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 
@@ -20,15 +19,12 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> {
-                throw new CommonException(ErrorCode.NOT_FOUND_USER,
-                    "존재하지 않는 유저입니다. email : %s".formatted(email));
-            });
+        User user = userRepository.getByEmail(email);
 
-        return org.springframework.security.core.userdetails.User.builder()
-            .username(user.getEmail())
-            .password(user.getPassword())
-            .build();
+        return CustomUserDetails.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .build();
     }
 }

@@ -1,11 +1,12 @@
 package wattt3.realworld.profile.domain;
 
 import jakarta.persistence.Embeddable;
-import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Getter
 @Embeddable

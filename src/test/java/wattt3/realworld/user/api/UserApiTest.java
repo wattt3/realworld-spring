@@ -1,13 +1,13 @@
 package wattt3.realworld.user.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
 import wattt3.realworld.user.domain.UserRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserApiTest extends ApiTest {
 
@@ -26,20 +26,21 @@ public class UserApiTest extends ApiTest {
     @DisplayName("유저 등록 중복 예외")
     void registerDuplicateUser() {
         Scenario.userApi().registerUserApi()
-            .userApi().registerDuplicateUserApi();
+                .userApi().registerDuplicateUserApi();
     }
 
     @Test
     @DisplayName("로그인")
     void login() {
         Scenario.userApi().registerUserApi()
-            .userApi().loginApi();
+                .userApi().loginApi();
     }
 
     @Test
     @DisplayName("현재 유저 정보")
     void getCurrentUser() {
         Scenario.userApi().registerUserApi()
-            .userApi().getCurrentUserApi(tokenManager.generate(email));
+                .userApi().getCurrentUserApi(tokenManager.generate(email));
     }
+
 }

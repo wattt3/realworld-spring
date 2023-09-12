@@ -33,12 +33,12 @@ public class UserApi {
         RegisterUserRequest request = new RegisterUserRequest(email, username, password);
 
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/users")
-            .then().log().all()
-            .statusCode(HttpStatus.CREATED.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/users")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
 
         return new Scenario();
     }
@@ -47,12 +47,12 @@ public class UserApi {
         RegisterUserRequest request = new RegisterUserRequest(email, username, password);
 
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/users")
-            .then().log().all()
-            .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/users")
+                .then().log().all()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 
         return new Scenario();
     }
@@ -61,24 +61,24 @@ public class UserApi {
         LoginUserRequest request = new LoginUserRequest(email, password);
 
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/users/login")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/users/login")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         return new Scenario();
     }
 
     public Scenario getCurrentUserApi(String token) {
         RestAssured.given().log().all()
-            .header(HttpHeaders.AUTHORIZATION, "Token " + token)
-            .contentType(ContentType.JSON)
-            .when()
-            .get("/user")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/user")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         return new Scenario();
     }
