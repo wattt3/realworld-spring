@@ -70,4 +70,12 @@ public class ArticleService {
                 AuthorDTO.of(author, followRelationRepository.existsByFolloweeIdAndFollowerId(
                         author.getId(), userId))));
     }
+
+    @Transactional
+    public void deleteArticle(String slug, Long userId) {
+        Article article = articleRepository.getBySlug(slug);
+
+        article.delete(userId);
+        articleRepository.save(article);
+    }
 }

@@ -71,4 +71,15 @@ public class ArticleApi {
 
         return new Scenario();
     }
+
+    public Scenario deleteArticle(String token) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .delete("/articles/" + slug)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
 }

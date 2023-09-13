@@ -54,11 +54,6 @@ class ArticleServiceTest {
         }
 
         @Override
-        public List<Article> findAll() {
-            return null;
-        }
-
-        @Override
         public Article getBySlug(String slug) {
             return aArticle().build();
         }

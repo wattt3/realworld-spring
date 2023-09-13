@@ -2,6 +2,7 @@ package wattt3.realworld.article.presentation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,5 +38,12 @@ public class ArticleController {
     public SingleArticleResponse updateArticle(@RequestBody UpdateArticleRequest request,
             @PathVariable String slug, @AuthenticationPrincipal CustomUserDetails userDetails) {
         return articleService.updateArticle(request, slug, userDetails.getId());
+    }
+
+    @DeleteMapping("/{slug}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteArticle(@PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        articleService.deleteArticle(slug, userDetails.getId());
     }
 }

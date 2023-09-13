@@ -1,6 +1,5 @@
 package wattt3.realworld.article.infra;
 
-import java.util.List;
 import org.springframework.stereotype.Repository;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
@@ -20,13 +19,9 @@ public class ArticleRepositoryAdapter implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
-        return jpaArticleRepository.findAll();
-    }
-
-    @Override
     public Article getBySlug(String slug) {
         return jpaArticleRepository.findBySlug(slug)
+                .filter(article -> !article.isDeleted())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "slug: %s 가 존재하지 않습니다.".formatted(slug)));
     }

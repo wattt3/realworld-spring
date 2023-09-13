@@ -28,7 +28,6 @@ public class Article extends BaseTimeEntity {
 
     private static final Pattern SPACE = Pattern.compile(" ");
     private static final String DASH = "-";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,6 +46,8 @@ public class Article extends BaseTimeEntity {
     private List<Long> favoriteUserIds;
     @Column(name = "authorId", nullable = false)
     private Long authorId;
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     public Article(
             String title,
@@ -110,5 +111,13 @@ public class Article extends BaseTimeEntity {
 
     public boolean isAuthor(Long userId) {
         return authorId.equals(userId);
+    }
+
+    public void delete(Long userId) {
+        if (!isAuthor(userId)) {
+            throw new IllegalArgumentException(
+                    "article slug: %s 의 작성자가 아닙니다.".formatted(this.slug));
+        }
+        isDeleted = true;
     }
 }
