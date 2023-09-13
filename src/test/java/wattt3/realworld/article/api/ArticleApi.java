@@ -1,4 +1,4 @@
-package wattt3.realworld.article.application.service;
+package wattt3.realworld.article.api;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
