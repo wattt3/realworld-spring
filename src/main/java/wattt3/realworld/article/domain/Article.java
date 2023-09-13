@@ -107,4 +107,8 @@ public class Article extends BaseTimeEntity {
             this.body = body;
         }
     }
+
+    public boolean isAuthor(Long userId) {
+        return authorId.equals(userId);
+    }
 }

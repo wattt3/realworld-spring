@@ -1,12 +1,14 @@
 package wattt3.realworld.article.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static wattt3.realworld.article.domain.ArticleFixture.aArticle;
 import static wattt3.realworld.user.domain.UserFixture.aUser;
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.domain.Article;
@@ -31,6 +33,17 @@ class ArticleServiceTest {
                 () -> assertThat(response.article().title()).isEqualTo("A TITLE"),
                 () -> assertThat(response.article().description()).isEqualTo("DESCRIPTION"),
                 () -> assertThat(response.article().body()).isEqualTo("BODY"));
+    }
+
+    @Test
+    @DisplayName("작성자가 아닌 유저가 수정시 예외 발생")
+    void updateByNotAuthor() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+        var request = new UpdateArticleRequest("A TITLE", "DESCRIPTION", "BODY");
+
+        assertThatThrownBy(() -> sut.updateArticle(request, "a-title", 2L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     public class ArticleRepositoryStub implements ArticleRepository {
