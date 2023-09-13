@@ -1,9 +1,9 @@
 package wattt3.realworld.article.application.service;
 
-import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.article.application.dto.ArticleDTO;
 import wattt3.realworld.article.application.dto.AuthorDTO;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
@@ -51,6 +51,7 @@ public class ArticleService {
         return new SingleArticleResponse(ArticleDTO.of(article, false, AuthorDTO.of(user, false)));
     }
 
+    @Transactional
     public SingleArticleResponse updateArticle(UpdateArticleRequest request, String slug,
             Long userId) {
         Article article = articleRepository.getBySlug(slug);

@@ -25,4 +25,16 @@ public class ArticleApiTest extends ApiTest {
         assertThat(tagRepository.findAll()).hasSize(1);
     }
 
+    @Test
+    void updateArticle() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi()
+                .slug("a-title")
+                .title("A TITLE")
+                .updateArticle(tokenManager.generate(email));
+
+        assertThat(articleRepository.getBySlug("A-TITLE")).isNotNull();
+    }
+
 }
