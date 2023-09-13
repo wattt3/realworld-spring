@@ -1,6 +1,7 @@
 package wattt3.realworld.article.domain;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -54,6 +55,11 @@ public class Article extends BaseTimeEntity {
             List<Tag> tags,
             List<Long> favoriteUserIds,
             Long authorId) {
+        Assert.hasText(title, "제목은 필수입니다.");
+        Assert.hasText(description, "설명은 필수입니다.");
+        Assert.hasText(body, "본문은 필수입니다.");
+        Assert.notNull(authorId, "작성자는 필수입니다.");
+
         this.slug = SPACE.matcher(title).replaceAll(DASH);
         this.title = title;
         this.description = description;
