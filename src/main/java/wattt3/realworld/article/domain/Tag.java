@@ -1,5 +1,6 @@
 package wattt3.realworld.article.domain;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,6 +30,13 @@ public class Tag {
     private Article article;
 
     public Tag(String name, Article article) {
+        this.name = name;
+        this.article = article;
+    }
+
+    @VisibleForTesting
+    Tag(Long id, String name, Article article) {
+        this.id = id;
         this.name = name;
         this.article = article;
     }
