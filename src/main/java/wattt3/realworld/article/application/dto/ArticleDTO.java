@@ -1,7 +1,10 @@
-package wattt3.realworld.article.application.service;
+package wattt3.realworld.article.application.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import wattt3.realworld.article.domain.Article;
+import wattt3.realworld.article.domain.Author;
+import wattt3.realworld.article.domain.Tag;
 
 public record ArticleDTO(String slug,
                          String title,

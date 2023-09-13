@@ -6,6 +6,9 @@ import static wattt3.realworld.user.domain.UserFixture.aUser;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import wattt3.realworld.article.application.request.CreateArticleRequest;
+import wattt3.realworld.article.domain.ArticleRepository;
+import wattt3.realworld.article.domain.TagRepository;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 

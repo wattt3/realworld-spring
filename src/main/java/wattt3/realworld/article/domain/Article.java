@@ -1,4 +1,4 @@
-package wattt3.realworld.article.application.service;
+package wattt3.realworld.article.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;

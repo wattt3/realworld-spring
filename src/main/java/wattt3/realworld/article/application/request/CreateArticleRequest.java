@@ -1,4 +1,4 @@
-package wattt3.realworld.article.application.service;
+package wattt3.realworld.article.application.request;
 
 import java.util.List;
 
