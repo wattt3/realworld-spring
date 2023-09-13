@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import wattt3.realworld.article.application.dto.ArticleDTO;
 import wattt3.realworld.article.application.dto.AuthorDTO;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
+import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Tag;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
@@ -29,7 +30,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public void createArticle(CreateArticleRequest request, Long userId) {
+    public SingleArticleResponse createArticle(CreateArticleRequest request, Long userId) {
         User user = userRepository.getById(userId);
 
         Article article = new Article(request.title(), request.title(), request.description(),
@@ -42,6 +43,6 @@ public class ArticleService {
 
         articleRepository.save(article);
 
-        ArticleDTO.of(article, false, AuthorDTO.of(user, false));
+        return new SingleArticleResponse(ArticleDTO.of(article, false, AuthorDTO.of(user, false)));
     }
 }
