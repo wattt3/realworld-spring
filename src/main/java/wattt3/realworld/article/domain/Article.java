@@ -96,7 +96,11 @@ public class Article extends BaseTimeEntity {
         this.tags = tags;
     }
 
-    public void update(String title, String description, String body) {
+    public void update(String title, String description, String body, Long userId) {
+        if (!isAuthor(userId)) {
+            throw new IllegalArgumentException(
+                    "article slug: %s 의 작성자가 아닙니다.".formatted(this.slug));
+        }
         if (title != null && !title.isEmpty()) {
             this.slug = SPACE.matcher(title).replaceAll(DASH);
             this.title = title;
@@ -109,15 +113,15 @@ public class Article extends BaseTimeEntity {
         }
     }
 
-    public boolean isAuthor(Long userId) {
-        return authorId.equals(userId);
-    }
-
     public void delete(Long userId) {
         if (!isAuthor(userId)) {
             throw new IllegalArgumentException(
                     "article slug: %s 의 작성자가 아닙니다.".formatted(this.slug));
         }
         isDeleted = true;
+    }
+
+    private boolean isAuthor(Long userId) {
+        return authorId.equals(userId);
     }
 }

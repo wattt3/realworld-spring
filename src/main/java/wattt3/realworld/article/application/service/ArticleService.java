@@ -57,12 +57,7 @@ public class ArticleService {
         Article article = articleRepository.getBySlug(slug);
         User author = userRepository.getById(article.getAuthorId());
 
-        if (!article.isAuthor(userId)) {
-            throw new IllegalArgumentException(
-                    "article slug: %s 의 작성자가 아닙니다.".formatted(article.getSlug()));
-        }
-
-        article.update(request.title(), request.description(), request.body());
+        article.update(request.title(), request.description(), request.body(), userId);
         articleRepository.save(article);
 
         return new SingleArticleResponse(ArticleDTO.of(article,
