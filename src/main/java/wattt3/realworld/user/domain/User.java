@@ -43,9 +43,6 @@ public class User {
     @Column(name = "image")
     @Comment("이미지")
     private String image;
-    @Column(name = "is_deleted")
-    @Comment("탈퇴")
-    private boolean isDeleted = false;
 
     @Builder
     public User(String email, String username, String password, String bio, String image) {
@@ -55,7 +52,6 @@ public class User {
         this.password = password;
         this.bio = bio;
         this.image = image;
-        this.isDeleted = false;
     }
 
     @VisibleForTesting
@@ -67,7 +63,6 @@ public class User {
         this.password = password;
         this.bio = bio;
         this.image = image;
-        this.isDeleted = false;
     }
 
     public User update(String email, String bio, String image) {
@@ -82,10 +77,6 @@ public class User {
 
     public ProfileResponse toProfile(boolean following) {
         return new ProfileResponse(username, bio, image, following);
-    }
-
-    public void delete() {
-        isDeleted = true;
     }
 
     private void validateUser(String email, String username, String password) {
