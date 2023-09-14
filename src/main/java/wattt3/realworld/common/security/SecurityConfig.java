@@ -51,8 +51,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles/feed").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
