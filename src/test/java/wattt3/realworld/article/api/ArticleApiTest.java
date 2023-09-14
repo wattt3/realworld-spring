@@ -18,6 +18,13 @@ public class ArticleApiTest extends ApiTest {
     private TagRepository tagRepository;
 
     @Test
+    void getArticle() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().getArticle();
+    }
+
+    @Test
     void createArticle() {
         Scenario.userApi().registerUserApi()
                 .articleApi().createArticle(tokenManager.generate(email));

@@ -42,6 +42,16 @@ public class ArticleApi {
         return this;
     }
 
+    public Scenario getArticle() {
+        RestAssured.given().log().all()
+                .when()
+                .get("/articles/" + slug)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
     public Scenario createArticle(String token) {
         var request = new CreateArticleRequest(title, description, body, tag);
 

@@ -34,6 +34,17 @@ public class ArticleService {
         this.followRelationRepository = followRelationRepository;
     }
 
+    @Transactional(readOnly = true)
+    public SingleArticleResponse getArticle(String slug, Long userId) {
+        Article article = articleRepository.getBySlug(slug);
+        User author = userRepository.getById(article.getAuthorId());
+
+        return new SingleArticleResponse(ArticleDTO.of(article,
+                favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId),
+                AuthorDTO.of(author, followRelationRepository.existsByFolloweeIdAndFollowerId(
+                        author.getId(), userId))));
+    }
+
     @Transactional
     public SingleArticleResponse createArticle(CreateArticleRequest request, Long userId) {
         User user = userRepository.getById(userId);

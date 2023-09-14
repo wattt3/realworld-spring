@@ -3,6 +3,7 @@ package wattt3.realworld.article.presentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,13 @@ public class ArticleController {
 
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
+    }
+
+    @GetMapping("{slug}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleArticleResponse getArticle(@PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        return articleService.getArticle(slug, user != null ? user.getId() : null);
     }
 
     @PostMapping

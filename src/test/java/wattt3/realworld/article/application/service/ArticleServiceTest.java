@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
+import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
@@ -20,6 +21,18 @@ import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
 
 class ArticleServiceTest {
+
+    @Test
+    void get() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+
+        SingleArticleResponse response = sut.getArticle("a-title", 1L);
+        assertAll(() -> assertThat(response.article().slug()).isEqualTo("a-title"),
+                () -> assertThat(response.article().title()).isEqualTo("a title"),
+                () -> assertThat(response.article().description()).isEqualTo("description"),
+                () -> assertThat(response.article().body()).isEqualTo("body"));
+    }
 
     @Test
     void update() {
