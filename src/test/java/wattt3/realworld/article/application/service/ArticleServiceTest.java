@@ -7,7 +7,6 @@ import static wattt3.realworld.article.domain.ArticleFixture.aArticle;
 import static wattt3.realworld.user.domain.UserFixture.aUser;
 
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -160,12 +159,6 @@ class ArticleServiceTest {
         @Override
         public List<FollowRelation> findAll() {
             return null;
-        }
-
-        @Override
-        public Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId,
-                Long followerId) {
-            return Optional.empty();
         }
 
         @Override
