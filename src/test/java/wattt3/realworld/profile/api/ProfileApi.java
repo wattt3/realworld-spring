@@ -1,14 +1,21 @@
 package wattt3.realworld.profile.api;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
+
 import io.restassured.RestAssured;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import wattt3.realworld.common.Scenario;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasKey;
-
 public class ProfileApi {
+
+    private String followee = "followee";
+
+    public ProfileApi followee(String followee) {
+        this.followee = followee;
+        return this;
+    }
 
     public Scenario getProfileApi() {
         RestAssured.given().log().all()
@@ -28,7 +35,7 @@ public class ProfileApi {
         RestAssured.given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Token " + token)
                 .when()
-                .post("/profiles/followee/follow")
+                .post("/profiles/" + followee + "/follow")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("profile", hasKey("username"))

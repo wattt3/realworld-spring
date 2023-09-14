@@ -1,11 +1,9 @@
 package wattt3.realworld.profile.infra;
 
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import wattt3.realworld.profile.domain.FollowRelation;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class FollowRelationAdapter implements FollowRelationRepository {
@@ -27,20 +25,19 @@ public class FollowRelationAdapter implements FollowRelationRepository {
     }
 
     @Override
-    public Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId,
-                                                                  Long followerId) {
-        return jpaFollowRelationRepository.findByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
-                followeeId, followerId);
-    }
-
-    @Override
     public boolean existsByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
-        return jpaFollowRelationRepository.existsByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(followeeId, followerId);
+        return jpaFollowRelationRepository.existsByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
+                followeeId, followerId);
     }
 
     @Override
     public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
         jpaFollowRelationRepository.deleteByFollowRelationId_FolloweeIdAndFollowRelationId_FollowerId(
                 followeeId, followerId);
+    }
+
+    @Override
+    public List<FollowRelation> findByFollowerId(Long followerId) {
+        return jpaFollowRelationRepository.findByFollowRelationId_FollowerId(followerId);
     }
 }

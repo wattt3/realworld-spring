@@ -25,6 +25,20 @@ public class ArticleApiTest extends ApiTest {
     }
 
     @Test
+    void getFeedArticles() {
+        Scenario.userApi().registerUserApi()
+                .userApi()
+                .email("followee@domain.com")
+                .username("followee").registerUserApi()
+                .profileApi().follow(tokenManager.generate(email))
+                .articleApi().createArticle(tokenManager.generate("followee@domain.com"))
+                .articleApi()
+                .slug("a-title-2")
+                .title("a title 2").createArticle(tokenManager.generate("followee@domain.com"))
+                .articleApi().getFeedArticles(tokenManager.generate(email), 2);
+    }
+
+    @Test
     void createArticle() {
         Scenario.userApi().registerUserApi()
                 .articleApi().createArticle(tokenManager.generate(email));

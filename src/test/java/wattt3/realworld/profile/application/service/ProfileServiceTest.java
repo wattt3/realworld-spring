@@ -1,11 +1,9 @@
 package wattt3.realworld.profile.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wattt3.realworld.profile.domain.ProfileFixture.aProfile;
 import static wattt3.realworld.user.domain.UserFixture.aUser;
 
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import wattt3.realworld.profile.application.response.ProfileResponse;
 import wattt3.realworld.profile.domain.FollowRelation;
@@ -50,18 +48,17 @@ class ProfileServiceTest {
         }
 
         @Override
-        public Optional<FollowRelation> findByFolloweeIdAndFollowerId(Long followeeId,
-                Long followerId) {
-            return Optional.of(aProfile().build());
-        }
-
-        @Override
         public boolean existsByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
             return true;
         }
 
         @Override
         public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
+        }
+
+        @Override
+        public List<FollowRelation> findByFollowerId(Long userId) {
+            return null;
         }
     }
 
