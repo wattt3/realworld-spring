@@ -1,5 +1,7 @@
 package wattt3.realworld.article.api;
 
+import static org.hamcrest.Matchers.equalTo;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
@@ -48,6 +50,18 @@ public class ArticleApi {
                 .get("/articles/" + slug)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
+    public Scenario getFeedArticles(String token, int expectedSize) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .get("/articles/feed")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("articlesCount", equalTo(expectedSize));
 
         return new Scenario();
     }
