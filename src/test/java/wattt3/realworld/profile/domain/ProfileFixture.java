@@ -1,6 +1,4 @@
-package wattt3.realworld.profile.fixture;
-
-import wattt3.realworld.profile.domain.FollowRelation;
+package wattt3.realworld.profile.domain;
 
 public class ProfileFixture {
 

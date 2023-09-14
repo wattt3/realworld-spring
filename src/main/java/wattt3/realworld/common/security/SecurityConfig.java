@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(AccessDeniedHandler accessDeniedHandler,
-                          AuthenticationEntryPoint authenticationEntryPoint, JwtFilter jwtFilter) {
+            AuthenticationEntryPoint authenticationEntryPoint, JwtFilter jwtFilter) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
         this.jwtFilter = jwtFilter;
@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
