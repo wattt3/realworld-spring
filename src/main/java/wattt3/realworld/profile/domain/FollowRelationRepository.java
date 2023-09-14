@@ -14,4 +14,6 @@ public interface FollowRelationRepository {
     boolean existsByFolloweeIdAndFollowerId(Long followeeId, Long followerId);
 
     void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId);
+
+    List<FollowRelation> findByFollowerId(Long userId);
 }

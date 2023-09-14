@@ -2,17 +2,21 @@ package wattt3.realworld.article.application.service;
 
 import java.util.Collections;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.article.application.dto.ArticleDTO;
 import wattt3.realworld.article.application.dto.AuthorDTO;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
+import wattt3.realworld.article.application.response.MultipleArticleResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Tag;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
+import wattt3.realworld.profile.domain.FollowRelation;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
 import wattt3.realworld.user.domain.User;
 import wattt3.realworld.user.domain.UserRepository;
@@ -43,6 +47,31 @@ public class ArticleService {
                 favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId),
                 AuthorDTO.of(author, followRelationRepository.existsByFolloweeIdAndFollowerId(
                         author.getId(), userId))));
+    }
+
+    @Transactional(readOnly = true)
+    public MultipleArticleResponse getFeedArticles(Pageable pageable, Long userId) {
+        List<Long> followees = followRelationRepository.findByFollowerId(userId).stream()
+                .map(FollowRelation::getFolloweeId)
+                .toList();
+
+        Page<Article> articlePages = articleRepository.findByAuthorIds(followees, pageable);
+
+        List<ArticleDTO> articles = articlePages.stream()
+                .map(article -> toArticleDTO(article, userId))
+                .toList();
+
+        return new MultipleArticleResponse(articles, articles.size());
+    }
+
+    private ArticleDTO toArticleDTO(Article article, Long userId) {
+        User author = userRepository.getById(article.getAuthorId());
+
+        return ArticleDTO.of(article,
+                favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(),
+                        userId), AuthorDTO.of(author,
+                        followRelationRepository.existsByFolloweeIdAndFollowerId(
+                                author.getId(), userId)));
     }
 
     @Transactional

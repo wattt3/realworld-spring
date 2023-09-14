@@ -63,6 +63,11 @@ class ProfileServiceTest {
         @Override
         public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
         }
+
+        @Override
+        public List<FollowRelation> findByFollowerId(Long userId) {
+            return null;
+        }
     }
 
     class StubUserRepository implements UserRepository {

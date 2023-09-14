@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
@@ -28,10 +34,24 @@ class ArticleServiceTest {
                 new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
 
         SingleArticleResponse response = sut.getArticle("a-title", 1L);
+
         assertAll(() -> assertThat(response.article().slug()).isEqualTo("a-title"),
                 () -> assertThat(response.article().title()).isEqualTo("a title"),
                 () -> assertThat(response.article().description()).isEqualTo("description"),
                 () -> assertThat(response.article().body()).isEqualTo("body"));
+    }
+
+    @Test
+    void getFeedArticles() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+        var offset = 0;
+        var limit = 20;
+        Pageable pageable = PageRequest.of(offset, limit, Sort.by(Direction.DESC, "createdAt"));
+
+        var response = sut.getFeedArticles(pageable, 1L);
+
+        assertThat(response.articlesCount()).isEqualTo(2);
     }
 
     @Test
@@ -74,6 +94,17 @@ class ArticleServiceTest {
         @Override
         public void delete(Article article) {
 
+        }
+
+        @Override
+        public Page<Article> findByAuthorIds(List<Long> authorIds, Pageable pageable) {
+            return new PageImpl<>(List.of(
+                    aArticle().build(),
+                    aArticle().id(2L)
+                            .slug("a-title-2")
+                            .title("a title 2")
+                            .build()
+            ));
         }
     }
 
@@ -145,6 +176,11 @@ class ArticleServiceTest {
         @Override
         public void deleteByFolloweeIdAndFollowerId(Long followeeId, Long followerId) {
 
+        }
+
+        @Override
+        public List<FollowRelation> findByFollowerId(Long userId) {
+            return List.of(new FollowRelation(2L, 1L));
         }
     }
 }
