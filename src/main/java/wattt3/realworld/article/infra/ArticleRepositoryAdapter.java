@@ -21,8 +21,12 @@ public class ArticleRepositoryAdapter implements ArticleRepository {
     @Override
     public Article getBySlug(String slug) {
         return jpaArticleRepository.findBySlug(slug)
-                .filter(article -> !article.isDeleted())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "slug: %s 가 존재하지 않습니다.".formatted(slug)));
+    }
+
+    @Override
+    public void delete(Article article) {
+        jpaArticleRepository.delete(article);
     }
 }

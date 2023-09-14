@@ -57,6 +57,11 @@ class ArticleServiceTest {
         public Article getBySlug(String slug) {
             return aArticle().build();
         }
+
+        @Override
+        public void delete(Article article) {
+
+        }
     }
 
     public class UserRepositoryStub implements UserRepository {

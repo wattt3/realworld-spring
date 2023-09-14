@@ -46,6 +46,7 @@ public class ArticleApiTest extends ApiTest {
 
         assertThatThrownBy(() -> articleRepository.getBySlug("a-title"))
                 .hasMessage("slug: a-title 가 존재하지 않습니다.");
+        assertThat(tagRepository.findAll()).hasSize(0);
     }
 
 }

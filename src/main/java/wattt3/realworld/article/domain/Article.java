@@ -46,8 +46,6 @@ public class Article extends BaseTimeEntity {
     private List<Long> favoriteUserIds;
     @Column(name = "authorId", nullable = false)
     private Long authorId;
-    @Column(name = "is_deleted")
-    private boolean isDeleted = false;
 
     public Article(
             String title,
@@ -118,7 +116,6 @@ public class Article extends BaseTimeEntity {
             throw new IllegalArgumentException(
                     "article slug: %s 의 작성자가 아닙니다.".formatted(this.slug));
         }
-        isDeleted = true;
     }
 
     private boolean isAuthor(Long userId) {

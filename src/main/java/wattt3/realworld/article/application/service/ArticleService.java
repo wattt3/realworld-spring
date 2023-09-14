@@ -71,6 +71,7 @@ public class ArticleService {
         Article article = articleRepository.getBySlug(slug);
 
         article.delete(userId);
-        articleRepository.save(article);
+
+        articleRepository.delete(article);
     }
 }
