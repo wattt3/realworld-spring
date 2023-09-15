@@ -98,7 +98,6 @@ public class ArticleService {
         User author = userRepository.getById(article.getAuthorId());
 
         article.update(request.title(), request.description(), request.body(), userId);
-        articleRepository.save(article);
 
         return new SingleArticleResponse(ArticleDTO.of(article,
                 favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId),
