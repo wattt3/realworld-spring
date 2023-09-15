@@ -11,17 +11,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.springframework.util.Assert;
-import wattt3.realworld.profile.application.response.ProfileResponse;
 
 @Getter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Comment("유저")
-@ToString
 public class User {
 
     @Id
@@ -65,18 +62,12 @@ public class User {
         this.image = image;
     }
 
-    public User update(String email, String bio, String image) {
+    public void update(String email, String bio, String image) {
         Assert.hasText(email, "이메일은 필수입니다.");
 
         this.email = email;
         this.bio = bio;
         this.image = image;
-
-        return this;
-    }
-
-    public ProfileResponse toProfile(boolean following) {
-        return new ProfileResponse(username, bio, image, following);
     }
 
     private void validateUser(String email, String username, String password) {

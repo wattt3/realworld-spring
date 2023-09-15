@@ -15,7 +15,7 @@ public class ProfileService {
     private final UserRepository userRepository;
 
     public ProfileService(FollowRelationRepository followRelationRepository,
-                          UserRepository userRepository) {
+            UserRepository userRepository) {
         this.followRelationRepository = followRelationRepository;
         this.userRepository = userRepository;
     }
@@ -27,7 +27,7 @@ public class ProfileService {
         FollowRelation followRelation = new FollowRelation(followee.getId(), followerId);
         followRelationRepository.save(followRelation);
 
-        return followee.toProfile(true);
+        return ProfileResponse.of(followee, true);
     }
 
     @Transactional(readOnly = true)
@@ -37,10 +37,10 @@ public class ProfileService {
         if (followerId != null) {
             boolean following = followRelationRepository.existsByFolloweeIdAndFollowerId(
                     followee.getId(), followerId);
-            return followee.toProfile(following);
+            return ProfileResponse.of(followee, following);
         }
 
-        return followee.toProfile(false);
+        return ProfileResponse.of(followee, false);
     }
 
     @Transactional
@@ -49,6 +49,6 @@ public class ProfileService {
 
         followRelationRepository.deleteByFolloweeIdAndFollowerId(followee.getId(), followerId);
 
-        return followee.toProfile(false);
+        return ProfileResponse.of(followee, false);
     }
 }

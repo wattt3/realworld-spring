@@ -24,18 +24,26 @@ public class ArticleApiTest extends ApiTest {
                 .articleApi().getArticle();
     }
 
+    // N + 1 Test
     @Test
     void getFeedArticles() {
         Scenario.userApi().registerUserApi()
                 .userApi()
                 .email("followee@domain.com")
                 .username("followee").registerUserApi()
+                .userApi()
+                .email("followee2@domain.com")
+                .username("followee2").registerUserApi()
                 .profileApi().follow(tokenManager.generate(email))
+                .profileApi().followee("followee2").follow(tokenManager.generate(email))
                 .articleApi().createArticle(tokenManager.generate("followee@domain.com"))
                 .articleApi()
                 .slug("a-title-2")
                 .title("a title 2").createArticle(tokenManager.generate("followee@domain.com"))
-                .articleApi().getFeedArticles(tokenManager.generate(email), 2);
+                .articleApi()
+                .slug("a-title-3")
+                .title("a title 3").createArticle(tokenManager.generate("followee2@domain.com"))
+                .articleApi().getFeedArticles(tokenManager.generate(email), 3);
     }
 
     @Test

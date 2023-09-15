@@ -6,9 +6,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -16,18 +19,18 @@ import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import wattt3.realworld.common.entity.BaseTimeEntity;
+import wattt3.realworld.user.domain.User;
 
 @Table(name = "article")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class Article extends BaseTimeEntity {
 
     private static final Pattern SPACE = Pattern.compile(" ");
     private static final String DASH = "-";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,8 +47,9 @@ public class Article extends BaseTimeEntity {
     @Column(name = "favorited")
     @ElementCollection
     private List<Long> favoriteUserIds;
-    @Column(name = "authorId", nullable = false)
-    private Long authorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
 
     public Article(
             String title,
@@ -53,11 +57,11 @@ public class Article extends BaseTimeEntity {
             String body,
             List<Tag> tags,
             List<Long> favoriteUserIds,
-            Long authorId) {
+            User author) {
         Assert.hasText(title, "제목은 필수입니다.");
         Assert.hasText(description, "설명은 필수입니다.");
         Assert.hasText(body, "본문은 필수입니다.");
-        Assert.notNull(authorId, "작성자는 필수입니다.");
+        Assert.notNull(author, "작성자는 필수입니다.");
 
         this.slug = SPACE.matcher(title).replaceAll(DASH);
         this.title = title;
@@ -65,7 +69,7 @@ public class Article extends BaseTimeEntity {
         this.body = body;
         this.tags = tags;
         this.favoriteUserIds = favoriteUserIds;
-        this.authorId = authorId;
+        this.author = author;
     }
 
     @VisibleForTesting
@@ -77,7 +81,7 @@ public class Article extends BaseTimeEntity {
             String body,
             List<Tag> tags,
             List<Long> favoriteUserIds,
-            Long authorId) {
+            User author) {
         this.id = id;
         this.slug = slug;
         this.title = title;
@@ -85,7 +89,7 @@ public class Article extends BaseTimeEntity {
         this.body = body;
         this.tags = tags;
         this.favoriteUserIds = favoriteUserIds;
-        this.authorId = authorId;
+        this.author = author;
     }
 
     public void addTags(List<Tag> tags) {
@@ -119,6 +123,6 @@ public class Article extends BaseTimeEntity {
     }
 
     private boolean isAuthor(Long userId) {
-        return authorId.equals(userId);
+        return author.getId().equals(userId);
     }
 }
