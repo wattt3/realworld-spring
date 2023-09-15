@@ -15,8 +15,7 @@ public class ArticleFixture {
     private String body = "body";
     private List<Tag> tags = Collections.emptyList();
     private List<Long> favoriteUserIds = Collections.emptyList();
-    private Long authorId = 1L;
-    private final User author = aUser().build();
+    private User author = aUser().build();
 
     public static ArticleFixture aArticle() {
         return new ArticleFixture();
@@ -57,8 +56,8 @@ public class ArticleFixture {
         return this;
     }
 
-    public ArticleFixture authorId(Long authorId) {
-        this.authorId = authorId;
+    public ArticleFixture author(User author) {
+        this.author = author;
         return this;
     }
 
