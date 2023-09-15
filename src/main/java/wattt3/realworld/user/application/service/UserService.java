@@ -21,7 +21,7 @@ public class UserService {
     private final TokenManager tokenManager;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       TokenManager tokenManager) {
+            TokenManager tokenManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenManager = tokenManager;
@@ -41,7 +41,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return userToResponse(user);
+        return UserResponse.of(user, tokenManager.generate(user.getEmail()));
     }
 
     @Transactional(readOnly = true)
@@ -52,31 +52,23 @@ public class UserService {
             throw new IllegalArgumentException("틀린 비밀번호입니다.");
         }
 
-        return userToResponse(user);
+        return UserResponse.of(user, tokenManager.generate(user.getEmail()));
     }
 
     @Transactional(readOnly = true)
     public UserResponse getUser(Long userId) {
         User user = userRepository.getById(userId);
 
-        return userToResponse(user);
+        return UserResponse.of(user, tokenManager.generate(user.getEmail()));
     }
 
     @Transactional
     public UserResponse updateUser(Long userId, UpdateUserRequest request) {
         User user = userRepository.getById(userId);
 
-        User updatedUser = user.update(request.email(), request.bio(), request.image());
+        user.update(request.email(), request.bio(), request.image());
 
-        return userToResponse(updatedUser);
-    }
-
-    private UserResponse userToResponse(User user) {
-        return new UserResponse(user.getEmail(),
-                tokenManager.generate(user.getEmail()),
-                user.getUsername(),
-                user.getBio(),
-                user.getImage());
+        return UserResponse.of(user, tokenManager.generate(user.getEmail()));
     }
 
 }
