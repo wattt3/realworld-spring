@@ -41,12 +41,9 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public SingleArticleResponse getArticle(String slug, Long userId) {
         Article article = articleRepository.getBySlug(slug);
-        User author = userRepository.getById(article.getAuthorId());
 
-        return new SingleArticleResponse(ArticleDTO.of(article,
-                favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId),
-                AuthorDTO.of(author, followRelationRepository.existsByFolloweeIdAndFollowerId(
-                        author.getId(), userId))));
+        return new SingleArticleResponse(ArticleDTO.of(article, isFavorite(userId, article),
+                AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))));
     }
 
     @Transactional(readOnly = true)
@@ -58,20 +55,11 @@ public class ArticleService {
         Page<Article> articlePages = articleRepository.findByAuthorIds(followees, pageable);
 
         List<ArticleDTO> articles = articlePages.stream()
-                .map(article -> toArticleDTO(article, userId))
+                .map(article -> ArticleDTO.of(article, isFavorite(userId, article),
+                        AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))))
                 .toList();
 
         return new MultipleArticleResponse(articles, articles.size());
-    }
-
-    private ArticleDTO toArticleDTO(Article article, Long userId) {
-        User author = userRepository.getById(article.getAuthorId());
-
-        return ArticleDTO.of(article,
-                favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(),
-                        userId), AuthorDTO.of(author,
-                        followRelationRepository.existsByFolloweeIdAndFollowerId(
-                                author.getId(), userId)));
     }
 
     @Transactional
@@ -79,7 +67,7 @@ public class ArticleService {
         User user = userRepository.getById(userId);
 
         Article article = new Article(request.title(), request.description(),
-                request.body(), Collections.emptyList(), Collections.emptyList(), userId);
+                request.body(), Collections.emptyList(), Collections.emptyList(), user);
 
         List<Tag> tags = request.tagList().stream()
                 .map(name -> new Tag(name, article))
@@ -95,14 +83,11 @@ public class ArticleService {
     public SingleArticleResponse updateArticle(UpdateArticleRequest request, String slug,
             Long userId) {
         Article article = articleRepository.getBySlug(slug);
-        User author = userRepository.getById(article.getAuthorId());
 
         article.update(request.title(), request.description(), request.body(), userId);
 
-        return new SingleArticleResponse(ArticleDTO.of(article,
-                favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId),
-                AuthorDTO.of(author, followRelationRepository.existsByFolloweeIdAndFollowerId(
-                        author.getId(), userId))));
+        return new SingleArticleResponse(ArticleDTO.of(article, isFavorite(userId, article),
+                AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))));
     }
 
     @Transactional
@@ -112,5 +97,14 @@ public class ArticleService {
         article.delete(userId);
 
         articleRepository.delete(article);
+    }
+
+    private boolean isFavorite(Long userId, Article article) {
+        return favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId);
+    }
+
+    private boolean isFollowing(Long userId, Article article) {
+        return followRelationRepository.existsByFolloweeIdAndFollowerId(
+                article.getAuthor().getId(), userId);
     }
 }

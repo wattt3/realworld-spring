@@ -1,7 +1,10 @@
 package wattt3.realworld.article.domain;
 
+import static wattt3.realworld.user.domain.UserFixture.aUser;
+
 import java.util.Collections;
 import java.util.List;
+import wattt3.realworld.user.domain.User;
 
 public class ArticleFixture {
 
@@ -13,6 +16,7 @@ public class ArticleFixture {
     private List<Tag> tags = Collections.emptyList();
     private List<Long> favoriteUserIds = Collections.emptyList();
     private Long authorId = 1L;
+    private final User author = aUser().build();
 
     public static ArticleFixture aArticle() {
         return new ArticleFixture();
@@ -59,7 +63,7 @@ public class ArticleFixture {
     }
 
     public Article build() {
-        return new Article(id, slug, title, description, body, tags, favoriteUserIds, authorId);
+        return new Article(id, slug, title, description, body, tags, favoriteUserIds, author);
     }
 
 }

@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.springframework.util.Assert;
 
@@ -20,7 +19,6 @@ import org.springframework.util.Assert;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Comment("유저")
-@ToString
 public class User {
 
     @Id
