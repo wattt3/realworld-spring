@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort.Direction;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
+import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.profile.domain.FollowRelation;
@@ -41,12 +42,22 @@ class ArticleServiceTest {
     }
 
     @Test
+    void getArticles() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+        ArticleSearchCondition condition = new ArticleSearchCondition(null, null, "username");
+        Pageable pageable = PageRequest.of(0, 20);
+
+        var response = sut.getArticles(condition, pageable, 1L);
+
+        assertThat(response.articlesCount()).isEqualTo(3);
+    }
+
+    @Test
     void getFeedArticles() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
                 new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
-        var offset = 0;
-        var limit = 20;
-        Pageable pageable = PageRequest.of(offset, limit, Sort.by(Direction.DESC, "createdAt"));
+        Pageable pageable = PageRequest.of(0, 20, Sort.by(Direction.DESC, "createdAt"));
 
         var response = sut.getFeedArticles(pageable, 1L);
 
@@ -102,6 +113,21 @@ class ArticleServiceTest {
                     aArticle().id(2L)
                             .slug("a-title-2")
                             .title("a title 2")
+                            .build()
+            ));
+        }
+
+        @Override
+        public Page<Article> search(ArticleSearchCondition condition, Pageable pageable) {
+            return new PageImpl<>(List.of(
+                    aArticle().build(),
+                    aArticle().id(2L)
+                            .slug("a-title-2")
+                            .title("a title 2")
+                            .build(),
+                    aArticle().id(3L)
+                            .slug("a-title-3")
+                            .title("a title 3")
                             .build()
             ));
         }

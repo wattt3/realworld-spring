@@ -14,6 +14,7 @@ import wattt3.realworld.article.application.response.MultipleArticleResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Tag;
+import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.profile.domain.FollowRelation;
@@ -44,6 +45,19 @@ public class ArticleService {
 
         return new SingleArticleResponse(ArticleDTO.of(article, isFavorite(userId, article),
                 AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))));
+    }
+
+    @Transactional(readOnly = true)
+    public MultipleArticleResponse getArticles(ArticleSearchCondition condition, Pageable pageable,
+            Long userId) {
+        Page<Article> articlePages = articleRepository.search(condition, pageable);
+
+        List<ArticleDTO> articles = articlePages.stream()
+                .map(article -> ArticleDTO.of(article, isFavorite(userId, article),
+                        AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))))
+                .toList();
+
+        return new MultipleArticleResponse(articles, articles.size());
     }
 
     @Transactional(readOnly = true)
