@@ -54,9 +54,11 @@ public class ArticleRepositoryAdapter implements ArticleRepository {
     @Override
     public Page<Article> search(ArticleSearchCondition condition, Pageable pageable) {
         List<Article> articles = jpaQueryFactory.selectFrom(article)
-                .join(article.tags, tag)
-                .join(article.author, user)
-                .join(article.favoriteUserIds, user.id)
+                .leftJoin(article.tags, tag)
+                .leftJoin(user)
+                .on(article.author.eq(user),
+                        article.favoriteUserIds.isEmpty().or(article.favoriteUserIds.contains(
+                                user.id)))
                 .where(eqTagName(condition.tag()), eqAuthor(condition.author()),
                         eqFavorited(condition.favorited()))
                 .orderBy(article.createdAt.desc())
@@ -66,9 +68,6 @@ public class ArticleRepositoryAdapter implements ArticleRepository {
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(article.count())
                 .from(article)
-                .join(article.tags, tag)
-                .join(article.author, user)
-                .join(article.favoriteUserIds, user.id)
                 .where(eqTagName(condition.tag()), eqAuthor(condition.author()),
                         eqFavorited(condition.favorited()));
 

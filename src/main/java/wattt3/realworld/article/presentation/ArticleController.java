@@ -20,6 +20,7 @@ import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.MultipleArticleResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.application.service.ArticleService;
+import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.common.security.dto.CustomUserDetails;
 
 @RestController
@@ -37,6 +38,21 @@ public class ArticleController {
     public SingleArticleResponse getArticle(@PathVariable String slug,
             @AuthenticationPrincipal CustomUserDetails user) {
         return articleService.getArticle(slug, user != null ? user.getId() : null);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public MultipleArticleResponse getArticles(
+            @RequestParam(required = false) final String tag,
+            @RequestParam(required = false) final String author,
+            @RequestParam(required = false) final String favorited,
+            @RequestParam(defaultValue = "0") final int offset,
+            @RequestParam(defaultValue = "20") final int limit,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        PageRequest pageable = PageRequest.of(offset, limit);
+        ArticleSearchCondition condition = new ArticleSearchCondition(tag, author, favorited);
+
+        return articleService.getArticles(condition, pageable, user != null ? user.getId() : null);
     }
 
     @GetMapping("/feed")

@@ -4,6 +4,7 @@ import static wattt3.realworld.user.domain.UserFixture.aUser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import wattt3.realworld.user.domain.User;
 
 public class ArticleFixture {
@@ -14,7 +15,7 @@ public class ArticleFixture {
     private String description = "description";
     private String body = "body";
     private List<Tag> tags = Collections.emptyList();
-    private List<Long> favoriteUserIds = Collections.emptyList();
+    private Set<Long> favoriteUserIds = Collections.emptySet();
     private User author = aUser().build();
 
     public static ArticleFixture aArticle() {
@@ -51,7 +52,7 @@ public class ArticleFixture {
         return this;
     }
 
-    public ArticleFixture favoriteUserIds(List<Long> favoriteUserIds) {
+    public ArticleFixture favoriteUserIds(Set<Long> favoriteUserIds) {
         this.favoriteUserIds = favoriteUserIds;
         return this;
     }

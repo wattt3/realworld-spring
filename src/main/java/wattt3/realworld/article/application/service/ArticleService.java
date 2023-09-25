@@ -81,7 +81,7 @@ public class ArticleService {
         User user = userRepository.getById(userId);
 
         Article article = new Article(request.title(), request.description(),
-                request.body(), Collections.emptyList(), Collections.emptyList(), user);
+                request.body(), Collections.emptyList(), Collections.emptySet(), user);
 
         List<Tag> tags = request.tagList().stream()
                 .map(name -> new Tag(name, article))

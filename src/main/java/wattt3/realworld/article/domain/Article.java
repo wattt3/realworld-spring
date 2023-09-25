@@ -3,6 +3,7 @@ package wattt3.realworld.article.domain;
 import com.google.common.annotations.VisibleForTesting;
 import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -15,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,7 +48,8 @@ public class Article extends BaseTimeEntity {
     private List<Tag> tags;
     @Column(name = "favorited")
     @ElementCollection
-    private List<Long> favoriteUserIds;
+    @CollectionTable(name = "favorite_user", joinColumns = @JoinColumn(name = "id"))
+    private Set<Long> favoriteUserIds;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
@@ -56,7 +59,7 @@ public class Article extends BaseTimeEntity {
             String description,
             String body,
             List<Tag> tags,
-            List<Long> favoriteUserIds,
+            Set<Long> favoriteUserIds,
             User author) {
         Assert.hasText(title, "제목은 필수입니다.");
         Assert.hasText(description, "설명은 필수입니다.");
@@ -80,7 +83,7 @@ public class Article extends BaseTimeEntity {
             String description,
             String body,
             List<Tag> tags,
-            List<Long> favoriteUserIds,
+            Set<Long> favoriteUserIds,
             User author) {
         this.id = id;
         this.slug = slug;
