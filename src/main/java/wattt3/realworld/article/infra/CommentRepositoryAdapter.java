@@ -1,5 +1,6 @@
 package wattt3.realworld.article.infra;
 
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import wattt3.realworld.article.domain.Comment;
 import wattt3.realworld.article.domain.repository.CommentRepository;
@@ -16,5 +17,10 @@ public class CommentRepositoryAdapter implements CommentRepository {
     @Override
     public Comment save(Comment comment) {
         return jpaCommentRepository.save(comment);
+    }
+
+    @Override
+    public List<Comment> getByArticleId(Long articleId) {
+        return jpaCommentRepository.findByArticleId(articleId);
     }
 }

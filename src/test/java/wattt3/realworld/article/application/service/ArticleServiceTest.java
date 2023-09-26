@@ -229,5 +229,10 @@ class ArticleServiceTest {
         public Comment save(Comment comment) {
             return null;
         }
+
+        @Override
+        public List<Comment> getByArticleId(Long articleId) {
+            return null;
+        }
     }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
+import wattt3.realworld.article.domain.repository.CommentRepository;
 import wattt3.realworld.article.domain.repository.TagRepository;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
@@ -17,6 +18,8 @@ public class ArticleApiTest extends ApiTest {
     private ArticleRepository articleRepository;
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     void getArticle() {
@@ -98,6 +101,16 @@ public class ArticleApiTest extends ApiTest {
         assertThatThrownBy(() -> articleRepository.getBySlug("a-title"))
                 .hasMessage("slug: a-title 가 존재하지 않습니다.");
         assertThat(tagRepository.findAll()).hasSize(0);
+    }
+
+    @Test
+    void addComment() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().addComment(tokenManager.generate(email))
+                .articleApi().deleteArticle(tokenManager.generate(email));
+
+        assertThat(commentRepository.getByArticleId(1L)).hasSize(1);
     }
 
 }

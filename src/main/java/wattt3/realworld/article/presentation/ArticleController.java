@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import wattt3.realworld.article.application.request.AddCommentRequest;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.MultipleArticleResponse;
@@ -84,5 +85,12 @@ public class ArticleController {
     public void deleteArticle(@PathVariable String slug,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         articleService.deleteArticle(slug, userDetails.getId());
+    }
+
+    @PostMapping("/{slug}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addComment(@RequestBody AddCommentRequest request, @PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        articleService.addComment(request, slug, userDetails.getId());
     }
 }
