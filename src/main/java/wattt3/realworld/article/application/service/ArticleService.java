@@ -14,6 +14,7 @@ import wattt3.realworld.article.application.response.MultipleArticleResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Tag;
+import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.profile.domain.FollowRelation;
@@ -47,6 +48,19 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
+    public MultipleArticleResponse getArticles(ArticleSearchCondition condition, Pageable pageable,
+            Long userId) {
+        Page<Article> articlePages = articleRepository.search(condition, pageable);
+
+        List<ArticleDTO> articles = articlePages.stream()
+                .map(article -> ArticleDTO.of(article, isFavorite(userId, article),
+                        AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))))
+                .toList();
+
+        return new MultipleArticleResponse(articles, articles.size());
+    }
+
+    @Transactional(readOnly = true)
     public MultipleArticleResponse getFeedArticles(Pageable pageable, Long userId) {
         List<Long> followees = followRelationRepository.findByFollowerId(userId).stream()
                 .map(FollowRelation::getFolloweeId)
@@ -67,7 +81,7 @@ public class ArticleService {
         User user = userRepository.getById(userId);
 
         Article article = new Article(request.title(), request.description(),
-                request.body(), Collections.emptyList(), Collections.emptyList(), user);
+                request.body(), Collections.emptyList(), Collections.emptySet(), user);
 
         List<Tag> tags = request.tagList().stream()
                 .map(name -> new Tag(name, article))

@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
+import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.common.Scenario;
 
 public class ArticleApi {
@@ -50,6 +51,20 @@ public class ArticleApi {
                 .get("/articles/" + slug)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
+    public Scenario getArticles(ArticleSearchCondition condition, int expectedSize) {
+        RestAssured.given().log().all()
+                .when()
+                .param("tag", condition.tag())
+                .param("author", condition.author())
+                .param("favorited", condition.favorited())
+                .get("/articles")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("articlesCount", equalTo(expectedSize));
 
         return new Scenario();
     }
