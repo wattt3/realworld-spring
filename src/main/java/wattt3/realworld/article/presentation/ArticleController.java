@@ -87,6 +87,13 @@ public class ArticleController {
         articleService.deleteArticle(slug, userDetails.getId());
     }
 
+    @GetMapping("/{slug}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public void getComments(@PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        articleService.getComments(slug, userDetails != null ? userDetails.getId() : null);
+    }
+
     @PostMapping("/{slug}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody AddCommentRequest request, @PathVariable String slug,

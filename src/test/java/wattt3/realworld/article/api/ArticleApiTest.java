@@ -104,6 +104,14 @@ public class ArticleApiTest extends ApiTest {
     }
 
     @Test
+    void getComments() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().addComment(tokenManager.generate(email))
+                .articleApi().getComments();
+    }
+
+    @Test
     void addComment() {
         Scenario.userApi().registerUserApi()
                 .articleApi().createArticle(tokenManager.generate(email))

@@ -123,6 +123,16 @@ public class ArticleApi {
         return new Scenario();
     }
 
+    public Scenario getComments() {
+        RestAssured.given().log().all()
+                .when()
+                .get("/articles/" + slug + "/comments")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
     public Scenario addComment(String token) {
         var request = new AddCommentRequest(body);
 
