@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import wattt3.realworld.article.application.request.AddCommentRequest;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
@@ -116,6 +117,42 @@ public class ArticleApi {
                 .header(HttpHeaders.AUTHORIZATION, "Token " + token)
                 .when()
                 .delete("/articles/" + slug)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
+    public Scenario getComments() {
+        RestAssured.given().log().all()
+                .when()
+                .get("/articles/" + slug + "/comments")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
+
+    public Scenario addComment(String token) {
+        var request = new AddCommentRequest(body);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .body(request)
+                .when()
+                .post("/articles/" + slug + "/comments")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        return new Scenario();
+    }
+
+    public Scenario deleteComment(Long commentId, String token) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .delete("/articles/" + slug + "/comments/" + commentId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
