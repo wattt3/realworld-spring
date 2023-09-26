@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.article.application.dto.ArticleDTO;
 import wattt3.realworld.article.application.dto.AuthorDTO;
+import wattt3.realworld.article.application.dto.CommentDTO;
 import wattt3.realworld.article.application.request.AddCommentRequest;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
-import wattt3.realworld.article.application.response.CommentResponse;
 import wattt3.realworld.article.application.response.MultipleArticleResponse;
+import wattt3.realworld.article.application.response.MultipleCommentResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
+import wattt3.realworld.article.application.response.SingleCommentResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Comment;
 import wattt3.realworld.article.domain.Tag;
@@ -51,7 +53,8 @@ public class ArticleService {
         Article article = articleRepository.getBySlug(slug);
 
         return new SingleArticleResponse(ArticleDTO.of(article, isFavorite(userId, article),
-                AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))));
+                AuthorDTO.of(article.getAuthor(),
+                        isFollowing(userId, article.getAuthor().getId()))));
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +64,8 @@ public class ArticleService {
 
         List<ArticleDTO> articles = articlePages.stream()
                 .map(article -> ArticleDTO.of(article, isFavorite(userId, article),
-                        AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))))
+                        AuthorDTO.of(article.getAuthor(),
+                                isFollowing(userId, article.getAuthor().getId()))))
                 .toList();
 
         return new MultipleArticleResponse(articles, articles.size());
@@ -77,7 +81,8 @@ public class ArticleService {
 
         List<ArticleDTO> articles = articlePages.stream()
                 .map(article -> ArticleDTO.of(article, isFavorite(userId, article),
-                        AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))))
+                        AuthorDTO.of(article.getAuthor(),
+                                isFollowing(userId, article.getAuthor().getId()))))
                 .toList();
 
         return new MultipleArticleResponse(articles, articles.size());
@@ -108,7 +113,8 @@ public class ArticleService {
         article.update(request.title(), request.description(), request.body(), userId);
 
         return new SingleArticleResponse(ArticleDTO.of(article, isFavorite(userId, article),
-                AuthorDTO.of(article.getAuthor(), isFollowing(userId, article))));
+                AuthorDTO.of(article.getAuthor(),
+                        isFollowing(userId, article.getAuthor().getId()))));
     }
 
     @Transactional
@@ -120,15 +126,27 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
+    @Transactional(readOnly = true)
+    public MultipleCommentResponse getComments(String slug, Long userId) {
+        Long articleId = articleRepository.getBySlug(slug).getId();
+
+        List<CommentDTO> comments = commentRepository.getByArticleId(articleId).stream()
+                .map(comment -> CommentDTO.of(comment,
+                        isFollowing(userId, comment.getAuthor().getId())))
+                .toList();
+
+        return new MultipleCommentResponse(comments);
+    }
+
     @Transactional
-    public CommentResponse addComment(AddCommentRequest request, String slug, Long userId) {
+    public SingleCommentResponse addComment(AddCommentRequest request, String slug, Long userId) {
         Article article = articleRepository.getBySlug(slug);
         User user = userRepository.getById(userId);
         Comment comment = new Comment(request.body(), article, user);
 
         commentRepository.save(comment);
 
-        return CommentResponse.of(comment, false);
+        return SingleCommentResponse.of(comment, false);
     }
 
     @Transactional
@@ -144,8 +162,7 @@ public class ArticleService {
         return favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId);
     }
 
-    private boolean isFollowing(Long userId, Article article) {
-        return followRelationRepository.existsByFolloweeIdAndFollowerId(
-                article.getAuthor().getId(), userId);
+    private boolean isFollowing(Long userId, Long authorId) {
+        return followRelationRepository.existsByFolloweeIdAndFollowerId(authorId, userId);
     }
 }

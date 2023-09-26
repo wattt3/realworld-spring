@@ -1,5 +1,6 @@
 package wattt3.realworld.article.domain;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,6 +46,18 @@ public class Comment extends BaseTimeEntity {
         Assert.notNull(article, "게시글은 필수입니다.");
         Assert.notNull(author, "댓글 작성자는 필수입니다.");
 
+        this.body = body;
+        this.article = article;
+        this.author = author;
+    }
+
+    @VisibleForTesting
+    Comment(Long id, String body, Article article, User author) {
+        Assert.hasText(body, "댓글 내용은 필수입니다.");
+        Assert.notNull(article, "게시글은 필수입니다.");
+        Assert.notNull(author, "댓글 작성자는 필수입니다.");
+
+        this.id = id;
         this.body = body;
         this.article = article;
         this.author = author;
