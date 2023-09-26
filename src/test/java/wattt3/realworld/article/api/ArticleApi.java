@@ -48,7 +48,7 @@ public class ArticleApi {
     public Scenario getArticle() {
         RestAssured.given().log().all()
                 .when()
-                .get("/articles/")
+                .get("/articles/" + slug)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
