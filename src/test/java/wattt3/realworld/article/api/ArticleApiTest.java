@@ -107,10 +107,8 @@ public class ArticleApiTest extends ApiTest {
     void addComment() {
         Scenario.userApi().registerUserApi()
                 .articleApi().createArticle(tokenManager.generate(email))
-                .articleApi().addComment(tokenManager.generate(email))
-                .articleApi().deleteArticle(tokenManager.generate(email));
+                .articleApi().addComment(tokenManager.generate(email));
 
         assertThat(commentRepository.getByArticleId(1L)).hasSize(1);
     }
-
 }

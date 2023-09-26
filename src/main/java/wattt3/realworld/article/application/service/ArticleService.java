@@ -124,7 +124,7 @@ public class ArticleService {
     public CommentResponse addComment(AddCommentRequest request, String slug, Long userId) {
         Article article = articleRepository.getBySlug(slug);
         User user = userRepository.getById(userId);
-        Comment comment = new Comment(request.body(), article.getId(), user);
+        Comment comment = new Comment(request.body(), article, user);
 
         commentRepository.save(comment);
 

@@ -21,6 +21,6 @@ public class CommentRepositoryAdapter implements CommentRepository {
 
     @Override
     public List<Comment> getByArticleId(Long articleId) {
-        return jpaCommentRepository.findByArticleId(articleId);
+        return jpaCommentRepository.findByArticle_Id(articleId);
     }
 }

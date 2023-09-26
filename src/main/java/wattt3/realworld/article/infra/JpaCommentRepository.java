@@ -6,6 +6,6 @@ import wattt3.realworld.article.domain.Comment;
 
 public interface JpaCommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findByArticleId(Long articleId);
+    List<Comment> findByArticle_Id(Long articleId);
 
 }

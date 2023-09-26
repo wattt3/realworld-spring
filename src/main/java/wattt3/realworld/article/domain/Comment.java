@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.Assert;
 import wattt3.realworld.common.entity.BaseTimeEntity;
 import wattt3.realworld.user.domain.User;
@@ -29,20 +31,22 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "body", nullable = false)
     private String body;
 
-    @Column(name = "article_id", nullable = false)
-    private Long articleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
 
-    public Comment(String body, Long articleId, User author) {
+    public Comment(String body, Article article, User author) {
         Assert.hasText(body, "댓글 내용은 필수입니다.");
-        Assert.notNull(articleId, "게시글은 필수입니다.");
+        Assert.notNull(article, "게시글은 필수입니다.");
         Assert.notNull(author, "댓글 작성자는 필수입니다.");
 
         this.body = body;
-        this.articleId = articleId;
+        this.article = article;
         this.author = author;
     }
 
