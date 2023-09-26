@@ -23,4 +23,15 @@ public class CommentRepositoryAdapter implements CommentRepository {
     public List<Comment> getByArticleId(Long articleId) {
         return jpaCommentRepository.findByArticle_Id(articleId);
     }
+
+    @Override
+    public void delete(Comment comment) {
+        jpaCommentRepository.delete(comment);
+    }
+
+    @Override
+    public Comment getById(Long id) {
+        return jpaCommentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+    }
 }

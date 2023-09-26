@@ -8,4 +8,8 @@ public interface CommentRepository {
     Comment save(Comment comment);
 
     List<Comment> getByArticleId(Long articleId);
+
+    void delete(Comment comment);
+
+    Comment getById(Long commentId);
 }

@@ -111,4 +111,14 @@ public class ArticleApiTest extends ApiTest {
 
         assertThat(commentRepository.getByArticleId(1L)).hasSize(1);
     }
+
+    @Test
+    void deleteComment() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().addComment(tokenManager.generate(email))
+                .articleApi().deleteComment(1L, tokenManager.generate(email));
+
+        assertThat(commentRepository.getByArticleId(1L)).hasSize(0);
+    }
 }

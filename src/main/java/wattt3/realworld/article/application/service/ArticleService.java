@@ -131,6 +131,15 @@ public class ArticleService {
         return CommentResponse.of(comment, false);
     }
 
+    @Transactional
+    public void deleteComment(Long commentId, Long userId) {
+        Comment comment = commentRepository.getById(commentId);
+
+        comment.validAuthor(userId);
+
+        commentRepository.delete(comment);
+    }
+
     private boolean isFavorite(Long userId, Article article) {
         return favoriteRelationRepository.existsByArticleIdAndUserId(article.getId(), userId);
     }

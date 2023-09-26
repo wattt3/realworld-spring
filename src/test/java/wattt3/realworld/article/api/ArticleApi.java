@@ -137,4 +137,15 @@ public class ArticleApi {
 
         return new Scenario();
     }
+
+    public Scenario deleteComment(Long commentId, String token) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .delete("/articles/" + slug + "/comments/" + commentId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
 }

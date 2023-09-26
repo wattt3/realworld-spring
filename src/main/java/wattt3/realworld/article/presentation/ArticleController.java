@@ -93,4 +93,11 @@ public class ArticleController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         articleService.addComment(request, slug, userDetails.getId());
     }
+
+    @DeleteMapping("/{slug}/comments/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(@PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        articleService.deleteComment(id, userDetails.getId());
+    }
 }

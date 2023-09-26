@@ -234,5 +234,15 @@ class ArticleServiceTest {
         public List<Comment> getByArticleId(Long articleId) {
             return null;
         }
+
+        @Override
+        public void delete(Comment comment) {
+            
+        }
+
+        @Override
+        public Comment getById(Long commentId) {
+            return null;
+        }
     }
 }

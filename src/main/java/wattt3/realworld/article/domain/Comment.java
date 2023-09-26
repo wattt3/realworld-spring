@@ -50,4 +50,10 @@ public class Comment extends BaseTimeEntity {
         this.author = author;
     }
 
+    public void validAuthor(Long userId) {
+        if (!author.getId().equals(userId)) {
+            throw new IllegalArgumentException("댓글 작성자가 아닙니다.");
+        }
+    }
+
 }
