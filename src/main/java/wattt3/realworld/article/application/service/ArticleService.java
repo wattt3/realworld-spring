@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wattt3.realworld.article.application.dto.ArticleDTO;
 import wattt3.realworld.article.application.dto.AuthorDTO;
+import wattt3.realworld.article.application.request.AddCommentRequest;
 import wattt3.realworld.article.application.request.CreateArticleRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
+import wattt3.realworld.article.application.response.CommentResponse;
 import wattt3.realworld.article.application.response.MultipleArticleResponse;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
+import wattt3.realworld.article.domain.Comment;
 import wattt3.realworld.article.domain.Tag;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
+import wattt3.realworld.article.domain.repository.CommentRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.profile.domain.FollowRelation;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
@@ -29,14 +33,17 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final FavoriteRelationRepository favoriteRelationRepository;
     private final FollowRelationRepository followRelationRepository;
+    private final CommentRepository commentRepository;
 
     public ArticleService(ArticleRepository articleRepository, UserRepository userRepository,
             FavoriteRelationRepository favoriteRelationRepository,
-            FollowRelationRepository followRelationRepository) {
+            FollowRelationRepository followRelationRepository,
+            CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
         this.favoriteRelationRepository = favoriteRelationRepository;
         this.followRelationRepository = followRelationRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -111,6 +118,17 @@ public class ArticleService {
         article.delete(userId);
 
         articleRepository.delete(article);
+    }
+
+    @Transactional
+    public CommentResponse addComment(AddCommentRequest request, String slug, Long userId) {
+        Article article = articleRepository.getBySlug(slug);
+        User user = userRepository.getById(userId);
+        Comment comment = new Comment(request.body(), article.getId(), user);
+
+        commentRepository.save(comment);
+
+        return CommentResponse.of(comment, false);
     }
 
     private boolean isFavorite(Long userId, Article article) {

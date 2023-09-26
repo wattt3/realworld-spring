@@ -15,11 +15,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import wattt3.realworld.article.application.request.AddCommentRequest;
 import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
+import wattt3.realworld.article.domain.Comment;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
+import wattt3.realworld.article.domain.repository.CommentRepository;
 import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.profile.domain.FollowRelation;
 import wattt3.realworld.profile.domain.FollowRelationRepository;
@@ -31,7 +34,8 @@ class ArticleServiceTest {
     @Test
     void get() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
-                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
 
         SingleArticleResponse response = sut.getArticle("a-title", 1L);
 
@@ -44,7 +48,8 @@ class ArticleServiceTest {
     @Test
     void getArticles() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
-                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
         ArticleSearchCondition condition = new ArticleSearchCondition(null, null, "username");
         Pageable pageable = PageRequest.of(0, 20);
 
@@ -56,7 +61,8 @@ class ArticleServiceTest {
     @Test
     void getFeedArticles() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
-                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
         Pageable pageable = PageRequest.of(0, 20, Sort.by(Direction.DESC, "createdAt"));
 
         var response = sut.getFeedArticles(pageable, 1L);
@@ -67,7 +73,8 @@ class ArticleServiceTest {
     @Test
     void update() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
-                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
         var request = new UpdateArticleRequest("A TITLE", "DESCRIPTION", "BODY");
 
         var response = sut.updateArticle(request, "a-title", 1L);
@@ -82,11 +89,24 @@ class ArticleServiceTest {
     @DisplayName("작성자가 아닌 유저가 수정시 예외 발생")
     void updateByNotAuthor() {
         var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
-                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub());
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
         var request = new UpdateArticleRequest("A TITLE", "DESCRIPTION", "BODY");
 
         assertThatThrownBy(() -> sut.updateArticle(request, "a-title", 2L))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void addComment() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
+        var request = new AddCommentRequest("body");
+
+        var response = sut.addComment(request, "slug", 1L);
+
+        assertThat(response.body()).isEqualTo("body");
     }
 
     public class ArticleRepositoryStub implements ArticleRepository {
@@ -200,6 +220,14 @@ class ArticleServiceTest {
         @Override
         public List<FollowRelation> findByFollowerId(Long userId) {
             return List.of(new FollowRelation(2L, 1L));
+        }
+    }
+
+    private class CommentRepositoryStub implements CommentRepository {
+
+        @Override
+        public Comment save(Comment comment) {
+            return null;
         }
     }
 }
