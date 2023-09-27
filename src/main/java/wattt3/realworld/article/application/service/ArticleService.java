@@ -18,6 +18,7 @@ import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.application.response.SingleCommentResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Comment;
+import wattt3.realworld.article.domain.FavoriteRelation;
 import wattt3.realworld.article.domain.Tag;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
@@ -156,6 +157,29 @@ public class ArticleService {
         comment.validAuthor(userId);
 
         commentRepository.delete(comment);
+    }
+
+    @Transactional
+    public SingleArticleResponse favoriteArticle(String slug, Long userId) {
+        Article article = articleRepository.getBySlug(slug);
+        User user = userRepository.getById(userId);
+
+        FavoriteRelation favoriteRelation = new FavoriteRelation(article.getId(), userId);
+        favoriteRelationRepository.save(favoriteRelation);
+
+        return new SingleArticleResponse(ArticleDTO.of(article, true, AuthorDTO.of(user, false)));
+    }
+
+    @Transactional
+    public SingleArticleResponse unFavoriteArticle(String slug, Long userId) {
+        Article article = articleRepository.getBySlug(slug);
+        User user = userRepository.getById(userId);
+        
+        FavoriteRelation favoriteRelation = favoriteRelationRepository.getByArticleIdAndUserId(
+                article.getId(), userId);
+        favoriteRelationRepository.delete(favoriteRelation);
+
+        return new SingleArticleResponse(ArticleDTO.of(article, true, AuthorDTO.of(user, false)));
     }
 
     private boolean isFavorite(Long userId, Article article) {

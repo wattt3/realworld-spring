@@ -158,4 +158,26 @@ public class ArticleApi {
 
         return new Scenario();
     }
+
+    public Scenario favoriteArticle(String token) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .post("/articles/" + slug + "/favorite")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        return new Scenario();
+    }
+
+    public Scenario unFavoriteArticle(String token) {
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Token " + token)
+                .when()
+                .delete("/articles/" + slug + "/favorite")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        return new Scenario();
+    }
 }

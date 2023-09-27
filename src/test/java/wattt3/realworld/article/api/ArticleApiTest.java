@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.CommentRepository;
+import wattt3.realworld.article.domain.repository.FavoriteRelationRepository;
 import wattt3.realworld.article.domain.repository.TagRepository;
 import wattt3.realworld.common.ApiTest;
 import wattt3.realworld.common.Scenario;
@@ -20,6 +21,8 @@ public class ArticleApiTest extends ApiTest {
     private TagRepository tagRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private FavoriteRelationRepository favoriteRelationRepository;
 
     @Test
     void getArticle() {
@@ -128,5 +131,26 @@ public class ArticleApiTest extends ApiTest {
                 .articleApi().deleteComment(1L, tokenManager.generate(email));
 
         assertThat(commentRepository.getByArticleId(1L)).hasSize(0);
+    }
+
+    @Test
+    void favoriteArticle() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().favoriteArticle(tokenManager.generate(email));
+
+        assertThat(favoriteRelationRepository.existsByArticleIdAndUserId(1L, 1L))
+                .isTrue();
+    }
+
+    @Test
+    void unFavoriteArticle() {
+        Scenario.userApi().registerUserApi()
+                .articleApi().createArticle(tokenManager.generate(email))
+                .articleApi().favoriteArticle(tokenManager.generate(email))
+                .articleApi().unFavoriteArticle(tokenManager.generate(email));
+
+        assertThat(favoriteRelationRepository.existsByArticleIdAndUserId(1L, 1L))
+                .isFalse();
     }
 }

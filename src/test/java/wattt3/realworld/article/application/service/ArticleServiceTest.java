@@ -21,6 +21,7 @@ import wattt3.realworld.article.application.request.UpdateArticleRequest;
 import wattt3.realworld.article.application.response.SingleArticleResponse;
 import wattt3.realworld.article.domain.Article;
 import wattt3.realworld.article.domain.Comment;
+import wattt3.realworld.article.domain.FavoriteRelation;
 import wattt3.realworld.article.domain.condition.ArticleSearchCondition;
 import wattt3.realworld.article.domain.repository.ArticleRepository;
 import wattt3.realworld.article.domain.repository.CommentRepository;
@@ -121,6 +122,17 @@ class ArticleServiceTest {
         assertThat(response.comment().body()).isEqualTo("body");
     }
 
+    @Test
+    void favoriteArticle() {
+        var sut = new ArticleService(new ArticleRepositoryStub(), new UserRepositoryStub(),
+                new FavoriteRelationRepositoryStub(), new FollowRelationRepositoryStub(),
+                new CommentRepositoryStub());
+
+        SingleArticleResponse response = sut.favoriteArticle("a-title", 1L);
+
+        assertThat(response.article().slug()).isEqualTo("a-title");
+    }
+
     public class ArticleRepositoryStub implements ArticleRepository {
 
         @Override
@@ -204,6 +216,21 @@ class ArticleServiceTest {
         @Override
         public boolean existsByArticleIdAndUserId(Long articleId, Long userId) {
             return false;
+        }
+
+        @Override
+        public void save(FavoriteRelation favoriteRelation) {
+
+        }
+
+        @Override
+        public FavoriteRelation getByArticleIdAndUserId(Long id, Long userId) {
+            return null;
+        }
+
+        @Override
+        public void delete(FavoriteRelation favoriteRelation) {
+
         }
     }
 

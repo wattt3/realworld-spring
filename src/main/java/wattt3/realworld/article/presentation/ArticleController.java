@@ -107,4 +107,18 @@ public class ArticleController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         articleService.deleteComment(id, userDetails.getId());
     }
+
+    @PostMapping("/{slug}/favorite")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SingleArticleResponse favoriteArticle(@PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return articleService.favoriteArticle(slug, userDetails.getId());
+    }
+
+    @DeleteMapping("/{slug}/favorite")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleArticleResponse unFavoriteArticle(@PathVariable String slug,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return articleService.unFavoriteArticle(slug, userDetails.getId());
+    }
 }
